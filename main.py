@@ -1,7 +1,11 @@
 from flask import Flask, render_template
+import os
+from dotenv import load_dotenv
+
+load_dotenv("C:/Users/alber/PycharmProjects/EnviromentalVariables/.env")
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
+app.config['SECRET_KEY'] = os.getenv("FLASK_KEY")
 
 @app.route('/')
 def home():
