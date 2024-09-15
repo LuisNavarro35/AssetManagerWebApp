@@ -15,16 +15,14 @@
             <div class="container-fluid px-4">
 
 
+                <h3>Create New Location</h3>
 
-            <h3>Assign Asset to an Asset Group</h3>
-            {% include "assettable.html" %}
-            <div class="col-xl-4 col-sm-6">
-                {{render_form(form)}}
-            </div>
-
+                <div class="col-xl-6">
+                    {{render_form(form)}}
+                </div>
 
 
-            {% with messages = get_flashed_messages() %}
+                 {% with messages = get_flashed_messages() %}
                 {% if messages %}
                 <ul class=flashes>
                     {% for message in messages %}
@@ -33,6 +31,7 @@
                 </ul>
                 {% endif %}
                 {% endwith %}
+
 
 
             </div>

@@ -1,13 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
-
+{% from "bootstrap5/form.html" import render_form %}
 {% include "header.html" %}
 
 <body class="sb-nav-fixed">
 
 {% include "navegation.html" %}
-{% include "sidenavegation.html" %}
 
+<div id="layoutSidenav">
+    {% include "sidenavegation.html" %}
+
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+
+
+                <h3>Create New Asset</h3>
+
+                <div class="col-xl-6">
+                    {{render_form(form)}}
+                </div>
+
+
+
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <ul class=flashes>
+                    {% for message in messages %}
+                    <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                {% endwith %}
+
+
+            </div>
+        </main>
+
+    </div>
+</div>
 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"

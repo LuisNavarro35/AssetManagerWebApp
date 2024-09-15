@@ -28,105 +28,18 @@
             </tr>
             </tfoot>
             <tbody>
+            {% for asset in all_assets %}
             <tr>
-                <td>CCL01-001</td>
-                <td>CCL 2-3/4</td>
-                <td>Chevron 4</td>
-                <td>Casing Collar Locator</td>
-                <td>Chevron Name Pad</td>
-                <td>Midland</td>
-                <td>Good</td>
+                <td>{{ asset.sn }}</td>
+                <td>{{ asset.name }}</td>
+                <td>{{ asset.asset_group }}</td>
+                <td>{{ asset.description }}</td>
+                <td>{{ asset.location }}</td>
+                <td>{{ asset.district }}</td>
+                <td>{{ asset.op_status }}</td>
             </tr>
-            <tr>
-                <td>CCL01-001</td>
-                <td>CCL 2-3/4</td>
-                <td>Chevron 4</td>
-                <td>Casing Collar Locator</td>
-                <td>Chevron Name Pad</td>
-                <td>Midland</td>
-                <td>Good</td>
-            </tr>
-            <tr>
-                <td>CCL01-001</td>
-                <td>CCL 2-3/4</td>
-                <td>Chevron 4</td>
-                <td>Casing Collar Locator</td>
-                <td>Chevron Name Pad</td>
-                <td>Midland</td>
-                <td>Good</td>
-            </tr>
-            <tr>
-                <td>CCL01-001</td>
-                <td>CCL 2-3/4</td>
-                <td>Chevron 4</td>
-                <td>Casing Collar Locator</td>
-                <td>Chevron Name Pad</td>
-                <td>Midland</td>
-                <td>Good</td>
-            </tr>
-            <tr>
-                <td>CCL01-001</td>
-                <td>CCL 2-3/4</td>
-                <td>Chevron 4</td>
-                <td>Casing Collar Locator</td>
-                <td>Chevron Name Pad</td>
-                <td>Midland</td>
-                <td>Good</td>
-            </tr>
-            <tr>
-                <td>CCL01-001</td>
-                <td>CCL 2-3/4</td>
-                <td>Chevron 4</td>
-                <td>Casing Collar Locator</td>
-                <td>Chevron Name Pad</td>
-                <td>Midland</td>
-                <td>Good</td>
-            </tr>
-            <tr>
-                <td>CCL01-001</td>
-                <td>CCL 2-3/4</td>
-                <td>Chevron 4</td>
-                <td>Casing Collar Locator</td>
-                <td>Chevron Name Pad</td>
-                <td>Midland</td>
-                <td>Good</td>
-            </tr>
-            <tr>
-                <td>CCL01-001</td>
-                <td>CCL 2-3/4</td>
-                <td>Chevron 4</td>
-                <td>Casing Collar Locator</td>
-                <td>Chevron Name Pad</td>
-                <td>Midland</td>
-                <td>Good</td>
-            </tr>
-            <tr>
-                <td>CCL01-001</td>
-                <td>CCL 2-3/4</td>
-                <td>Chevron 4</td>
-                <td>Casing Collar Locator</td>
-                <td>Chevron Name Pad</td>
-                <td>Midland</td>
-                <td>Good</td>
-            </tr>
-            <tr>
-                <td>CCL01-001</td>
-                <td>CCL 2-3/4</td>
-                <td>Chevron 4</td>
-                <td>Casing Collar Locator</td>
-                <td>Chevron Name Pad</td>
-                <td>Midland</td>
-                <td>Good</td>
-            </tr>
-            <tr>
-                <td>CCL01-001</td>
-                <td>CCL 2-3/4</td>
-                <td>Chevron 4</td>
-                <td>Casing Collar Locator</td>
-                <td>Chevron Name Pad</td>
-                <td>Midland</td>
-                <td>Good</td>
-            </tr>
+
+            {% endfor %}
 
 
             </tbody>
