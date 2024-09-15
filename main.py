@@ -54,6 +54,7 @@ class AssetLocations(db.Model):
     __tablename__ = "assetlocations"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str]= mapped_column(String(250), nullable=False, unique=True)
+    district: Mapped[str]= mapped_column(String(250), nullable=False)
 
 
 with app.app_context():
@@ -92,12 +93,14 @@ def home():
 @app.route('/assign-asset', methods=["GET", "POST"])
 def assign_asset():
     all_assets = db.session.query(Asset).all()
-    assign_asset_form = AssignAsset(group_choices=get_group_list())
+    assign_asset_form = AssignAsset(group_choices=get_group_list(), location_choices=get_locations())
     if assign_asset_form.validate_on_submit():
         edit_asset= db.session.query(Asset).where(Asset.sn == assign_asset_form.sn.data).scalar()
-
+        asset_location = db.session.query(AssetLocations).where(AssetLocations.name == assign_asset_form.location.data).scalar()
         if edit_asset:
             edit_asset.asset_group = assign_asset_form.asset_group.data
+            edit_asset.location = assign_asset_form.location.data
+            edit_asset.district = asset_location.district
             db.session.commit()
             print("asset was succesfully assign to a group")
             return redirect(url_for("home"))
@@ -111,9 +114,10 @@ def move_group():
     assign_group_form = AssignAssetGroup(group_choices=get_group_list(), location_choices=get_locations())
     if assign_group_form.validate_on_submit():
         assets_results= db.session.query(Asset).where(Asset.asset_group == assign_group_form.asset_group.data).all()
+        asset_location= db.session.query(AssetLocations).where(AssetLocations.name == assign_group_form.asset_group_location.data).scalar()
         for asset in assets_results:
             asset.location= assign_group_form.asset_group_location.data
-            asset.district= assign_group_form.asset_group_district.data
+            asset.district= asset_location.district
             db.session.commit()
         print("asset group was successfully assign to a Location / District")
         return redirect(url_for("home"))
@@ -139,6 +143,7 @@ def new_asset():
     new_asset_form = NewAsset(group_choices=get_group_list(), location_choices=get_locations())
     if new_asset_form.validate_on_submit():
         old_asset =db.session.query(Asset).where(Asset.sn == new_asset_form.sn.data).scalar()
+        asset_location= db.session.query(AssetLocations).where(AssetLocations.name == new_asset_form.asset_group_location.data).scalar()
         if old_asset:
             flash(f"The asset {new_asset_form.sn.data} already exist")
 
@@ -148,7 +153,7 @@ def new_asset():
                                       asset_group=new_asset_form.asset_group.data,
                                       description=new_asset_form.description.data,
                                       location=new_asset_form.asset_group_location.data,
-                                      district=new_asset_form.asset_group_district.data,
+                                      district=asset_location.district,
                                       op_status=new_asset_form.op_status.data)
             db.session.add(new_asset_element)
             db.session.commit()
@@ -181,7 +186,8 @@ def new_location():
         if old_location:
             flash("Location Already Exists")
         else:
-            new_asset_location = AssetLocations(name=new_location_form.new_location.data)
+            new_asset_location = AssetLocations(name=new_location_form.new_location.data,
+                                                district=new_location_form.district.data)
             db.session.add(new_asset_location)
             db.session.commit()
             print("New location was created successfully")
