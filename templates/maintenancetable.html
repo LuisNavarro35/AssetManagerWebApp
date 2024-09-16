@@ -1,0 +1,48 @@
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fas fa-table me-1"></i>
+        Maintenance History
+    </div>
+    <div class="card-body">
+        <table id="datatablesSimple">
+            <thead>
+            <tr>
+                <th>SN</th>
+                <th>Name</th>
+                <th>Date</th>
+                <th>Event</th>
+                <th>User</th>
+                <th>Op Status</th>
+
+            </tr>
+            </thead>
+            <tfoot>
+            <tr>
+                <th>SN</th>
+                <th>Name</th>
+                <th>Date</th>
+                <th>Event</th>
+                <th>User</th>
+                <th>Op Status</th>
+            </tr>
+            </tfoot>
+            <tbody>
+
+
+            {% for event in all_events %}
+            <tr>
+                <td>{{ event.sn }}</td>
+                <td>{{ event.name }}</td>
+                <td>{{ event.date }}</td>
+                <td>{{ event.event_description }}</td>
+                <td>{{ event.user }}</td>
+                <td>{{ event.op_status }}</td>
+
+            </tr>
+            {% endfor %}
+
+
+            </tbody>
+        </table>
+    </div>
+</div>

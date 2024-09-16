@@ -7,6 +7,7 @@ from flask_bootstrap import Bootstrap5
 from project_forms import AssignAsset, AssignAssetGroup, MaintenanceEvent, NewAsset, NewGroup, NewLocation
 import os
 from dotenv import load_dotenv
+from datetime import date
 
 #________________________________________________sqlalchemy libraries__________________________________________________
 from flask_login import UserMixin, login_user, LoginManager, current_user, logout_user, login_required
@@ -43,6 +44,21 @@ class Asset(db.Model):
     location: Mapped[str]= mapped_column(String(250), nullable=False)
     district: Mapped[str]= mapped_column(String(250), nullable=False)
     op_status: Mapped[str]= mapped_column(String(250), nullable=False)
+
+    maintenance= relationship("Maintenance", back_populates="parent_asset")
+
+class Maintenance(db.Model):
+    __tablename__= "maintenance"
+    id: Mapped[int]= mapped_column(Integer, primary_key=True)
+    sn: Mapped[str]= mapped_column(String(250), nullable=False)
+    name: Mapped[str]= mapped_column(String(250), nullable=False)
+    date: Mapped[str]= mapped_column(String(250), nullable=False)
+    event_description: Mapped[str]= mapped_column(String(250), nullable=False)
+    user: Mapped[str]= mapped_column(String(250), nullable=False)
+    op_status: Mapped[str]= mapped_column(String(250), nullable=False)
+
+    asset_id: Mapped[int] =mapped_column(Integer, db.ForeignKey("assets.id"))
+    parent_asset= relationship("Asset", back_populates="maintenance")
 
 #Create table for all the asset groups
 class AssetGroups(db.Model):
@@ -128,14 +144,30 @@ def move_group():
 def maintenance_event():
     maintenance_event_form = MaintenanceEvent()
     if maintenance_event_form.validate_on_submit():
-        print("maintenance event was created successfully")
+        asset_maintenance = db.session.query(Asset).where(Asset.sn == maintenance_event_form.sn.data).scalar()
+        if asset_maintenance:
+            new_maintenance_event= Maintenance(sn=maintenance_event_form.sn.data,
+                                                   name=asset_maintenance.name,
+                                                   date=date.today().strftime("%B %d, %Y"),
+                                                   event_description=maintenance_event_form.description.data,
+                                                   user="Luis Navarro",
+                                                   op_status=maintenance_event_form.op_status.data,
+                                                   parent_asset=asset_maintenance)
+            db.session.add(new_maintenance_event)
+            asset_maintenance.op_status = maintenance_event_form.op_status.data
+            db.session.commit()
+
+            print("maintenance event was created successfully")
+        else:
+            flash("Asset doesn't exist, Please create New Asset")
     return render_template("createmaintenance.html", form=maintenance_event_form)
 
 
 @app.route('/maintenance-history')
 def maintenance_history():
+    all_events= db.session.query(Maintenance).all()
 
-    return render_template("maintenancehistory.html")
+    return render_template("maintenancehistory.html", all_events=all_events)
 
 
 @app.route('/new-asset', methods=["GET", "POST"])
