@@ -16,11 +16,11 @@ from sqlalchemy.orm import relationship, DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import Integer, String, Text, ForeignKey
 
 #_______________________________________________load enviroment variables_______________________________________________
-load_dotenv("C:/Users/ADMIN/PycharmProjects/AssetManager/.env")
+load_dotenv()
 
 #__________________________________________________initialize flask app_________________________________________________
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.getenv("FLASK_KEY")
+app.config['SECRET_KEY'] = os.getenv("FLASK_SECRET_KEY")
 Bootstrap5(app)
 
 #______________________________________________create SQL database______________________________________________________
