@@ -40,7 +40,7 @@ class Asset(db.Model):
     sn: Mapped[str] = mapped_column(String(250), unique=True, nullable=False)
     name: Mapped[str]= mapped_column(String(250), nullable=False)
     asset_group: Mapped[str]= mapped_column(String(250), nullable=False)
-    description: Mapped[str]= mapped_column(String, nullable=False)
+    description: Mapped[str]= mapped_column(String(250), nullable=False)
     location: Mapped[str]= mapped_column(String(250), nullable=False)
     district: Mapped[str]= mapped_column(String(250), nullable=False)
     op_status: Mapped[str]= mapped_column(String(250), nullable=False)
