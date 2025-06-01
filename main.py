@@ -16,7 +16,7 @@ from sqlalchemy.orm import relationship, DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import Integer, String, Text, ForeignKey
 
 #_______________________________________________load enviroment variables_______________________________________________
-load_dotenv("C:/Users/alber/PycharmProjects/EnviromentalVariables/.env")
+load_dotenv("C:/Users/ADMIN/PycharmProjects/AssetManager/.env")
 
 #__________________________________________________initialize flask app_________________________________________________
 app = Flask(__name__)
@@ -28,7 +28,7 @@ Bootstrap5(app)
 class Base(DeclarativeBase):
     pass
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///assets.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://admin:assetkey@assetmanager-db2.c7e8oy6qww1d.us-east-2.rds.amazonaws.com/assetmanager-db2'
 db = SQLAlchemy(model_class=Base)
 db.init_app(app)
 
@@ -233,4 +233,4 @@ def delete_data():
     return render_template("deletedata.html")
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False, host="0.0.0.0", port=80)
