@@ -28,7 +28,7 @@ Bootstrap5(app)
 class Base(DeclarativeBase):
     pass
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://admin:assetkey@assetmanager-db2.c7e8oy6qww1d.us-east-2.rds.amazonaws.com/assetmanager-db2'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://admin:assetkey@assetmanager-db2.c7e8oy6qww1d.us-east-2.rds.amazonaws.com/assetmanagerdb2'
 db = SQLAlchemy(model_class=Base)
 db.init_app(app)
 
