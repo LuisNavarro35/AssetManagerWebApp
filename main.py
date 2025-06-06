@@ -241,6 +241,7 @@ def delete_group():
 def delete_location():
     delete_location_form= DeleteDataLocation(location_choices=get_locations())
     return render_template("deletelocation.html", form=delete_location_form)
+# making a commit test
 
 if __name__ == "__main__":
     app.run(debug=False, host="0.0.0.0", port=80)
