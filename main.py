@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 from datetime import date
 
 #________________________________________________sqlalchemy libraries__________________________________________________
-from flask_login import UserMixin, login_user, LoginManager, current_user, logout_user, login_required
+from flask_login import UserMixin, login_user, LoginManager, current_user, logout_user, login_required, DeleteDataAsset, DeleteDataGroup, DeleteDataLocation
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship, DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import Integer, String, Text, ForeignKey
@@ -227,10 +227,20 @@ def new_location():
     return render_template("createlocation.html", form=new_location_form)
 
 
-@app.route('/delet-data')
+@app.route('/delete-data', methods=["GET", "POST"])
 def delete_data():
+    delete_asset_form= DeleteDataAsset()
+    return render_template("deletedata.html", form=delete_asset_form)
 
-    return render_template("deletedata.html")
+@app.route('/delete-group', methods=["GET", "POST"])
+def delete_group():
+    delete_group_form= DeleteDataGroup(group_choices=get_group_list())
+    return render_template("deletegroup.html", form=delete_group_form)
+
+@app.route('/delete-location', methods=["GET", "POST"])
+def delete_location():
+    delete_location_form= DeleteDataLocation(location_choices=get_locations())
+    return render_template("deletelocation.html", form=delete_location_form)
 
 if __name__ == "__main__":
     app.run(debug=False, host="0.0.0.0", port=80)

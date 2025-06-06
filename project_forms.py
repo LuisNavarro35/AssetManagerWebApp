@@ -47,3 +47,19 @@ class NewLocation(FlaskForm):
     new_location= StringField(label="Location Name", validators=[DataRequired()])
     district= SelectField(label="Select District", choices=district_choices)
     submit = SubmitField("Create Location")
+
+class DeleteDataAsset(FlaskForm):
+    asset_sn = StringField(label="Input Asset SN to delete:")
+    submit = SubmitField("Delete Asset")
+
+def DeleteDataGroup(group_choices):
+    class DeleteAssetGroup(FlaskForm):
+        asset_groups=SelectField(label="Choose Asset Group:", choices=group_choices)
+        submit = SubmitField("Delete Asset Group")
+    return DeleteAssetGroup()
+
+def DeleteDataLocation(location_choices):
+    class DeleteAssetLocation(FlaskForm):
+        field_locations = SelectField(label="Choose Field Location:", choices=location_choices)
+        submit = SubmitField("Delete Field Location")
+    return DeleteAssetLocation()
