@@ -229,7 +229,7 @@ def new_location():
 
 @app.route('/delete-data', methods=["GET", "POST"])
 def delete_data():
-    delete_asset_form = DeleteDataAsset()
+    delete_asset_form= DeleteDataAsset()
 
     if delete_asset_form.validate_on_submit():
         asset_to_delete = db.session.query(Asset).where(Asset.sn == delete_asset_form.asset_sn.data).scalar()
@@ -241,6 +241,9 @@ def delete_data():
             flash(f"Asset with SN: {delete_asset_form.asset_sn.data} deleted successfully")
         else:
             flash(f"Asset {delete_asset_form.asset_sn.data} not found")
+
+
+    return render_template("deletedata.html", form=delete_asset_form)
 
 @app.route('/delete-group', methods=["GET", "POST"])
 def delete_group():
