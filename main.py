@@ -242,19 +242,41 @@ def delete_data():
         else:
             flash(f"Asset {delete_asset_form.asset_sn.data} not found")
 
-
     return render_template("deletedata.html", form=delete_asset_form)
 
 @app.route('/delete-group', methods=["GET", "POST"])
 def delete_group():
     delete_group_form= DeleteDataGroup(group_choices=get_group_list())
+
+    if delete_group_form.validate_on_submit():
+        group_to_delete= db.session.query(AssetGroups).where(AssetGroups.name == delete_group_form.asset_groups.data).scalar()
+
+        if group_to_delete:
+            db.session.delete(group_to_delete)
+            db.session.commit()
+            flash(f"Group {delete_group_form.asset_groups.data} has been deleted successfully")
+        else:
+            flash("Select a group to delete")
+
     return render_template("deletegroup.html", form=delete_group_form)
+
+
 
 @app.route('/delete-location', methods=["GET", "POST"])
 def delete_location():
     delete_location_form= DeleteDataLocation(location_choices=get_locations())
+
+    if delete_location_form.validate_on_submit():
+        location_to_delete= db.session.query(AssetLocations).where(AssetLocations.name == delete_location_form.field_locations.data).scalar()
+
+        if location_to_delete:
+            db.session.delete(location_to_delete)
+            db.session.commit()
+            flash(f"Location {delete_location_form.field_locations.data} has been deleted successfully")
+        else:
+            flash("Select a Field Location to Delete")
+
     return render_template("deletelocation.html", form=delete_location_form)
-# making a commit test
 
 if __name__ == "__main__":
     app.run(debug=False, host="0.0.0.0", port=80)
