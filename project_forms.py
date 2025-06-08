@@ -1,7 +1,7 @@
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, SelectField, TextAreaField
-from wtforms.validators import DataRequired
+from wtforms import StringField, SubmitField, PasswordField, SelectField, TextAreaField, BooleanField
+from wtforms.validators import DataRequired, Length
 
 
 district_choices = ["Victoria", "Midland", "Pennsylvania"]
@@ -63,3 +63,14 @@ def DeleteDataLocation(location_choices):
         field_locations = SelectField(label="Choose Field Location:", choices=location_choices)
         submit = SubmitField("Delete Field Location")
     return DeleteAssetLocation()
+
+class LoginForm(FlaskForm):
+    username = StringField("Username", validators=[DataRequired()])
+    password = PasswordField("Password", validators=[DataRequired()])
+    submit = SubmitField("Login")
+
+class RegisterUserForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired(), Length(min=3, max=150)])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
+    is_admin = BooleanField('Admin')
+    submit = SubmitField('Register User')

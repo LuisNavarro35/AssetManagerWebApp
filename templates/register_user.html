@@ -16,20 +16,19 @@
 
 
             {% block content %}
-             <div style="margin-top: 30px;"></div>
-            <form method="POST">
-            {{ form.hidden_tag() }}
-            <div>{{ form.username.label }} {{ form.username() }}</div>
-                <div style="margin-top: 30px;"></div>
+            <h2>Register New User</h2>
+            {{ render_form(form) }}
+            {% endblock %}
 
-            <div>{{ form.password.label }} {{ form.password() }}</div>
-                <div style="margin-top: 30px;"></div>
-
-            <div>{{ form.submit(class="btn btn-primary") }}</div>
-             </form>
-                {% endblock %}
-
-
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <ul class=flashes>
+                    {% for message in messages %}
+                    <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                {% endwith %}
 
             </div>
         </main>

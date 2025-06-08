@@ -1,10 +1,12 @@
 #________________________________________________flask libraries_______________________________________________________
-from flask import Flask, render_template, redirect, url_for, flash
+from flask import Flask, render_template, redirect, url_for, flash, abort
 from flask_bootstrap import Bootstrap5
 
 #_____________________________________________Project Libraries_________________________________________________________
 
-from project_forms import AssignAsset, AssignAssetGroup, MaintenanceEvent, NewAsset, NewGroup, NewLocation, DeleteDataAsset, DeleteDataGroup, DeleteDataLocation
+from project_forms import AssignAsset, AssignAssetGroup, MaintenanceEvent, NewAsset, NewGroup, NewLocation, DeleteDataAsset, DeleteDataGroup, DeleteDataLocation, LoginForm, RegisterUserForm
+from functools import wraps
+
 import os
 from dotenv import load_dotenv
 from datetime import date
@@ -18,10 +20,18 @@ from sqlalchemy import Integer, String, Text, ForeignKey
 #_______________________________________________load enviroment variables_______________________________________________
 load_dotenv()
 
+#________________________________________________ werkzeug libraries____________________________________________________
+from werkzeug.security import generate_password_hash, check_password_hash
+
 #__________________________________________________initialize flask app_________________________________________________
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv("FLASK_SECRET_KEY")
 Bootstrap5(app)
+
+#________________________________________________Initialize LoginManager________________________________________________
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login"  # redirect to this view if not logged in
 
 #______________________________________________create SQL database______________________________________________________
 # CREATE DATABASE
@@ -72,6 +82,18 @@ class AssetLocations(db.Model):
     name: Mapped[str]= mapped_column(String(250), nullable=False, unique=True)
     district: Mapped[str]= mapped_column(String(250), nullable=False)
 
+class User(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    password_hash = db.Column(db.String(200), nullable=False)  # store hashed passwords
+    is_admin = db.Column(db.Boolean, default=False)
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
 
 with app.app_context():
     db.create_all()
@@ -98,6 +120,19 @@ def get_locations():
 
     return ASSET_LOCATIONS
 
+#____________________________________admin_required decorator__________________________________________________________
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated or not current_user.is_admin:
+            abort(403)  # Forbidden
+        return f(*args, **kwargs)
+    return decorated_function
+
+@app.errorhandler(403)
+def forbidden(e):
+    return render_template("403.html"), 403
+
 #______________________________________________flask functions routes___________________________________________________
 
 @app.route('/')
@@ -107,6 +142,7 @@ def home():
 
 
 @app.route('/assign-asset', methods=["GET", "POST"])
+@login_required
 def assign_asset():
     all_assets = db.session.query(Asset).all()
     assign_asset_form = AssignAsset(group_choices=get_group_list(), location_choices=get_locations())
@@ -126,6 +162,7 @@ def assign_asset():
 
 
 @app.route('/move-group', methods=["GET", "POST"])
+@login_required
 def move_group():
     assign_group_form = AssignAssetGroup(group_choices=get_group_list(), location_choices=get_locations())
     if assign_group_form.validate_on_submit():
@@ -141,6 +178,7 @@ def move_group():
 
 
 @app.route('/maintenance-event', methods=["GET", "POST"])
+@login_required
 def maintenance_event():
     maintenance_event_form = MaintenanceEvent()
     if maintenance_event_form.validate_on_submit():
@@ -171,6 +209,7 @@ def maintenance_history():
 
 
 @app.route('/new-asset', methods=["GET", "POST"])
+@login_required
 def new_asset():
     new_asset_form = NewAsset(group_choices=get_group_list(), location_choices=get_locations())
     if new_asset_form.validate_on_submit():
@@ -195,6 +234,8 @@ def new_asset():
 
 
 @app.route('/new-assetgroup', methods=["GET", "POST"])
+@login_required
+@admin_required
 def new_assetgroup():
     new_assetgroup_form = NewGroup()
     if new_assetgroup_form.validate_on_submit():
@@ -211,6 +252,8 @@ def new_assetgroup():
 
 
 @app.route('/new-location', methods=["GET", "POST"])
+@login_required
+@admin_required
 def new_location():
     new_location_form = NewLocation()
     if new_location_form.validate_on_submit():
@@ -228,6 +271,8 @@ def new_location():
 
 
 @app.route('/delete-data', methods=["GET", "POST"])
+@login_required
+@admin_required
 def delete_data():
     delete_asset_form= DeleteDataAsset()
 
@@ -245,6 +290,8 @@ def delete_data():
     return render_template("deletedata.html", form=delete_asset_form)
 
 @app.route('/delete-group', methods=["GET", "POST"])
+@login_required
+@admin_required
 def delete_group():
     delete_group_form= DeleteDataGroup(group_choices=get_group_list())
 
@@ -263,6 +310,8 @@ def delete_group():
 
 
 @app.route('/delete-location', methods=["GET", "POST"])
+@login_required
+@admin_required
 def delete_location():
     delete_location_form= DeleteDataLocation(location_choices=get_locations())
 
@@ -277,6 +326,51 @@ def delete_location():
             flash("Select a Field Location to Delete")
 
     return render_template("deletelocation.html", form=delete_location_form)
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+@app.route('/login', methods=["GET", "POST"])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user and check_password_hash(user.password_hash, form.password.data):
+            login_user(user)
+            flash("Logged in successfully!", "success")
+            return redirect(url_for("home"))
+        else:
+            flash("Invalid username or password", "danger")
+    return render_template("login.html", form=form)
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash("Logged out.", "info")
+    return redirect(url_for("login"))
+
+@app.route('/register-user', methods=['GET', 'POST'])
+@login_required
+def register_user():
+    if not current_user.is_admin:
+        flash("Unauthorized access", "danger")
+        return redirect(url_for('index'))
+
+    form = RegisterUserForm()
+    if form.validate_on_submit():
+        if User.query.filter_by(username=form.username.data).first():
+            flash("Username already exists", "warning")
+        else:
+            new_user = User(username=form.username.data, is_admin=form.is_admin.data)
+            new_user.set_password(form.password.data)
+            db.session.add(new_user)
+            db.session.commit()
+            flash("User registered successfully", "success")
+            return redirect(url_for('register_user'))
+
+    return render_template('register_user.html', form=form)
 
 if __name__ == "__main__":
     app.run(debug=False, host="0.0.0.0", port=80)

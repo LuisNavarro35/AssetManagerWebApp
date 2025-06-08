@@ -15,19 +15,10 @@
             <div class="container-fluid px-4">
 
 
-            {% block content %}
-             <div style="margin-top: 30px;"></div>
-            <form method="POST">
-            {{ form.hidden_tag() }}
-            <div>{{ form.username.label }} {{ form.username() }}</div>
-                <div style="margin-top: 30px;"></div>
-
-            <div>{{ form.password.label }} {{ form.password() }}</div>
-                <div style="margin-top: 30px;"></div>
-
-            <div>{{ form.submit(class="btn btn-primary") }}</div>
-             </form>
-                {% endblock %}
+          {% block content %}
+         <h1>403 - Forbidden</h1>
+                <p>You are not authorized to access this page.</p>
+            {% endblock %}
 
 
 
