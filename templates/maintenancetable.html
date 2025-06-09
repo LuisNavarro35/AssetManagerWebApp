@@ -1,48 +1,166 @@
+<!-- jQuery & DataTables core -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<!-- Buttons extension -->
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+
+<!-- Custom styling -->
+<style>
+  thead input, thead select {
+    width: 100%; box-sizing: border-box;
+  }
+  .status-bad {
+    background-color: #f8d7da !important;
+    color: #721c24 !important; font-weight: bold;
+  }
+  .status-warning {
+    background-color: #fff3cd !important;
+    color: #856404 !important; font-weight: bold;
+  }
+  .status-good {
+    background-color: #d4edda !important;
+    color: #155724 !important; font-weight: bold;
+  }
+
+    .date-filter-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.date-filter-row span {
+  font-size: 0.85em;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.date-filter-row input[type="date"] {
+  width: 65%;
+  padding: 2px;
+  font-size: 0.85em;
+}
+
+</style>
+
+
+
 <div class="card mb-4">
-    <div class="card-header">
-        <i class="fas fa-table me-1"></i>
-        Maintenance History
-    </div>
-    <div class="card-body">
-        <table id="datatablesSimple">
-            <thead>
-            <tr>
-                <th>SN</th>
-                <th>Name</th>
-                <th>Date</th>
-                <th>Event</th>
-                <th>User</th>
-                <th>Op Status</th>
+  <div class="card-header">
+    <i class="fas fa-table me-1"></i>
+    Maintenance History
+  </div>
+  <div class="card-body">
+    <table id="maintenanceTable" class="display table table-striped table-bordered">
+      <thead>
+        <tr>
+          <th>SN</th>
+          <th>Name</th>
+          <th>Date</th>
+          <th>Event</th>
+          <th>User</th>
+          <th>Op Status</th>
+        </tr>
+        <tr>
+  <th><input type="text" placeholder="Filter SN" /></th>
+  <th><input type="text" placeholder="Filter Name" /></th>
+  <th>
+  <div class="date-filter-row">
+    <span>From</span>
+    <input type="date" id="minDate" />
+  </div>
+  <div class="date-filter-row">
+    <span>To</span>
+    <input type="date" id="maxDate" />
+  </div>
+</th>
 
-            </tr>
-            </thead>
-            <tfoot>
-            <tr>
-                <th>SN</th>
-                <th>Name</th>
-                <th>Date</th>
-                <th>Event</th>
-                <th>User</th>
-                <th>Op Status</th>
-            </tr>
-            </tfoot>
-            <tbody>
-
-
-            {% for event in all_events %}
-            <tr>
-                <td>{{ event.sn }}</td>
-                <td>{{ event.name }}</td>
-                <td>{{ event.date }}</td>
-                <td>{{ event.event_description }}</td>
-                <td>{{ event.user }}</td>
-                <td>{{ event.op_status }}</td>
-
-            </tr>
-            {% endfor %}
-
-
-            </tbody>
-        </table>
-    </div>
+  <th><input type="text" placeholder="Filter Event" /></th>
+  <th><input type="text" placeholder="Filter User" /></th>
+  <th>
+    <select><option value="">All</option></select>
+  </th>
+</tr>
+      </thead>
+      <tbody>
+        {% for event in all_events %}
+        <tr>
+          <td>{{ event.sn }}</td>
+          <td>{{ event.name }}</td>
+          <td>{{ event.date }}</td>
+          <td>{{ event.event_description }}</td>
+          <td>{{ event.user }}</td>
+          <td>{{ event.op_status }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </div>
+
+<script>
+  $(document).ready(function () {
+    const table = $('#maintenanceTable').DataTable({
+      orderCellsTop: true,
+      fixedHeader: true,
+      responsive: true,
+      pageLength: 25,
+      dom: 'Bfrtip',
+      buttons: ['copy','csv','excel','pdf'],
+      initComplete: function () {
+        const api = this.api();
+
+        // set up filters
+        api.columns().every(function (colIdx) {
+          const column = this;
+          const th = $('#maintenanceTable thead tr:eq(1) th').eq(colIdx);
+          const input = th.find('input');
+          const select = th.find('select');
+
+          // text input
+          if (input.length) {
+            input.on('keyup change clear', function () {
+              if (column.search() !== this.value) {
+                column.search(this.value).draw();
+              }
+            });
+          }
+
+          // dropdown
+          if (select.length) {
+            let vals = new Set();
+            column.data().each(d => vals.add($('<div>').html(d).text().trim()));
+            [...vals].sort().forEach(v => select.append(`<option value="${v}">${v}</option>`));
+            select.on('change', function () {
+              const v = $.fn.dataTable.util.escapeRegex($(this).val());
+              column.search(v ? '^'+v+'$' : '', true, false).draw();
+            });
+          }
+        });
+
+        // initial coloring + reapply on draw
+        applyStatusColors();
+        api.on('draw', applyStatusColors);
+      }
+    });
+
+    function applyStatusColors() {
+      $('#maintenanceTable tbody tr').each(function () {
+        const cell = $(this).find('td').eq(5);
+        const txt = cell.text().trim().toLowerCase();
+        cell.removeClass('status-bad status-warning status-good');
+        if (txt==='bad')       cell.addClass('status-bad');
+        else if (txt==='warning') cell.addClass('status-warning');
+        else if (txt==='good')    cell.addClass('status-good');
+      });
+    }
+  });
+</script>
