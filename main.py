@@ -188,7 +188,7 @@ def maintenance_event():
                                                    name=asset_maintenance.name,
                                                    date=date.today().strftime("%B %d, %Y"),
                                                    event_description=maintenance_event_form.description.data,
-                                                   user="Luis Navarro",
+                                                   user=current_user.username,
                                                    op_status=maintenance_event_form.op_status.data,
                                                    parent_asset=asset_maintenance)
             db.session.add(new_maintenance_event)
