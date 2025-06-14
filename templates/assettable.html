@@ -78,7 +78,7 @@
 
     <tbody>
         {% for asset in all_assets %}
-        <tr>
+        <tr ondblclick="window.location.href='/asset/{{ asset.sn }}'">
             <td>{{ asset.sn }}</td>
             <td>{{ asset.name }}</td>
             <td>{{ asset.asset_group }}</td>
