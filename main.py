@@ -1,5 +1,5 @@
 #________________________________________________flask libraries_______________________________________________________
-from flask import Flask, render_template, redirect, url_for, flash, abort
+from flask import Flask, render_template, redirect, url_for, flash, abort, request
 from flask_bootstrap import Bootstrap5
 
 #_____________________________________________Project Libraries_________________________________________________________
@@ -201,11 +201,16 @@ def maintenance_event():
     return render_template("createmaintenance.html", form=maintenance_event_form)
 
 
-@app.route('/maintenance-history')
+@app.route('/maintenance-history', methods=['GET', 'POST'])
 def maintenance_history():
-    all_events= db.session.query(Maintenance).all()
+    sn_filter = request.args.get('sn') or request.form.get('sn')
+    query = db.session.query(Maintenance)
 
-    return render_template("maintenancehistory.html", all_events=all_events)
+    if sn_filter:
+        query = query.filter_by(sn=sn_filter)
+
+    maintenance_records = query.all()
+    return render_template('maintenancehistory.html', records=maintenance_records)
 
 
 @app.route('/new-asset', methods=["GET", "POST"])

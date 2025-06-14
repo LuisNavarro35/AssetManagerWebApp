@@ -32,6 +32,7 @@
             <form method="POST" action="{{ url_for('delete_asset', sn=asset.sn) }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this asset? This action cannot be undone.');">
             <button type="submit" class="btn btn-danger">Delete Asset</button>
             </form>
+            <a href="{{ url_for('maintenance_history', sn=asset.sn) }}" class="btn btn-info">View Maintenance History</a>
                     </div>
             {% endblock %}
 

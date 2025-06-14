@@ -91,14 +91,14 @@
 </tr>
       </thead>
       <tbody>
-        {% for event in all_events %}
+        {% for record in records %}
         <tr>
-          <td>{{ event.sn }}</td>
-          <td>{{ event.name }}</td>
-          <td>{{ event.date }}</td>
-          <td>{{ event.event_description }}</td>
-          <td>{{ event.user }}</td>
-          <td>{{ event.op_status }}</td>
+          <td>{{ record.sn }}</td>
+          <td>{{ record.name }}</td>
+          <td>{{ record.date }}</td>
+          <td>{{ record.event_description }}</td>
+          <td>{{ record.user }}</td>
+          <td>{{ record.op_status }}</td>
         </tr>
         {% endfor %}
       </tbody>
