@@ -33,6 +33,7 @@
             <button type="submit" class="btn btn-danger">Delete Asset</button>
             </form>
             <a href="{{ url_for('maintenance_history', sn=asset.sn) }}" class="btn btn-info">View Maintenance History</a>
+            <a href="{{ url_for('maintenance_event', sn=asset.sn) }}" class="btn btn-success">Create Maintenance Event</a>
                     </div>
             {% endblock %}
 

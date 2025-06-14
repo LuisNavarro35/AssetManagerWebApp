@@ -180,7 +180,15 @@ def move_group():
 @app.route('/maintenance-event', methods=["GET", "POST"])
 @login_required
 def maintenance_event():
+
+    sn_prefill = request.args.get('sn')
+
     maintenance_event_form = MaintenanceEvent()
+
+    # Prefill SN field if passed from asset detail page
+    if sn_prefill:
+        maintenance_event_form.sn.data = sn_prefill
+
     if maintenance_event_form.validate_on_submit():
         asset_maintenance = db.session.query(Asset).where(Asset.sn == maintenance_event_form.sn.data).scalar()
         if asset_maintenance:
@@ -194,8 +202,9 @@ def maintenance_event():
             db.session.add(new_maintenance_event)
             asset_maintenance.op_status = maintenance_event_form.op_status.data
             db.session.commit()
+            flash("Maintenance event created successfully!", "success")
+            return redirect(url_for('maintenance_history', sn= sn_prefill))
 
-            print("maintenance event was created successfully")
         else:
             flash("Asset doesn't exist, Please create New Asset")
     return render_template("createmaintenance.html", form=maintenance_event_form)
