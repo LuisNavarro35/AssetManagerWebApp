@@ -307,8 +307,6 @@ def delete_group():
 
     return render_template("deletegroup.html", form=delete_group_form)
 
-
-
 @app.route('/delete-location', methods=["GET", "POST"])
 @login_required
 @admin_required
@@ -371,6 +369,66 @@ def register_user():
             return redirect(url_for('register_user'))
 
     return render_template('register_user.html', form=form)
+
+
+@app.route("/asset/<sn>")
+@login_required
+def asset_detail(sn):
+    asset = db.session.query(Asset).filter_by(sn=sn).first()
+    if not asset:
+        return "Asset not found", 404
+    return render_template("asset_detail.html", asset=asset)
+
+
+@app.route("/asset/<sn>/edit", methods=["GET", "POST"])
+@login_required
+def edit_asset(sn):
+
+    asset_selected = db.session.query(Asset).filter_by(sn=sn).first()
+    if not asset_selected:
+        return "Asset not found", 404
+
+
+    edit_asset_form=NewAsset(group_choices=get_group_list(), location_choices=get_locations())
+
+    # Update existing asset using form data
+
+    if edit_asset_form.validate_on_submit():
+        original_asset_sn= asset_selected.sn #saving the original value of the sn to update the maintenance table
+
+        asset_selected.sn= edit_asset_form.sn.data
+        asset_selected.name= edit_asset_form.name.data
+        asset_selected.description= edit_asset_form.description.data
+        asset_selected.asset_group= edit_asset_form.asset_group.data
+        asset_selected.location= edit_asset_form.asset_group_location.data
+        asset_selected.op_status = edit_asset_form.op_status.data
+
+        asset_location = db.session.query(AssetLocations).where(
+            AssetLocations.name == edit_asset_form.asset_group_location.data).scalar()
+
+        asset_selected.district= asset_location.district
+
+        if original_asset_sn != edit_asset_form.sn.data:
+            db.session.query(Maintenance).filter_by(sn=original_asset_sn).update({"sn": edit_asset_form.sn.data})
+
+        db.session.commit()
+
+        return redirect(url_for("asset_detail", sn=asset_selected.sn))
+
+
+
+    # Pre-fill form data from the asset object
+
+    edit_asset_form.sn.data= asset_selected.sn
+    edit_asset_form.name.data= asset_selected.name
+    edit_asset_form.description.data = asset_selected.description
+    edit_asset_form.op_status.data = asset_selected.op_status
+    if asset_selected.asset_group in get_group_list():
+        edit_asset_form.asset_group.data= asset_selected.asset_group
+    if asset_selected.location in get_locations():
+        edit_asset_form.asset_group_location.data= asset_selected.location
+
+    return render_template("edit_asset.html", form=edit_asset_form)
 
 if __name__ == "__main__":
     app.run(debug=False, host="0.0.0.0", port=80)

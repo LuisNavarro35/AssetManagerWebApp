@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+{% from "bootstrap5/form.html" import render_form %}
+{% include "header.html" %}
+
+<body class="sb-nav-fixed">
+
+{% include "navegation.html" %}
+
+<div id="layoutSidenav">
+    {% include "sidenavegation.html" %}
+
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+
+
+            {% block content %}
+            <h2>Asset Details</h2>
+                <div style="width: 50%; margin: auto;">
+            <table class="table table-bordered">
+            <tr><th>Serial Number</th><td>{{ asset.sn }}</td></tr>
+            <tr><th>Name</th><td>{{ asset.name }}</td></tr>
+            <tr><th>Asset Group</th><td>{{ asset.asset_group}}</td></tr>
+            <tr><th>Description</th><td>{{ asset.description }}</td></tr>
+            <tr><th>Location</th><td>{{ asset.location}}</td></tr>
+            <tr><th>District</th><td>{{ asset.district }}</td></tr>
+            <tr><th>Status</th><td>{{ asset.op_status }}</td></tr>
+            </table>
+            <a href="{{ url_for('home') }}" class="btn btn-primary">Back to Assets</a>
+            <a href="{{ url_for('edit_asset', sn=asset.sn) }}" class="btn btn-warning">Edit Asset</a>
+                    </div>
+            {% endblock %}
+
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <ul class=flashes>
+                    {% for message in messages %}
+                    <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                {% endwith %}
+
+            </div>
+        </main>
+
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+<script src="static/js/scripts.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+<script src="static/assets/demo/chart-area-demo.js"></script>
+<script src="static/assets/demo/chart-bar-demo.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"
+        crossorigin="anonymous"></script>
+<script src="static/js/datatables-simple-demo.js"></script>
+</body>
+</html>

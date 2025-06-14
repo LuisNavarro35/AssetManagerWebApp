@@ -36,7 +36,7 @@ def NewAsset(group_choices, location_choices):
         description = StringField(label="Description", validators=[DataRequired()])
         asset_group_location = SelectField(label="Select Location", choices=location_choices)
         op_status = SelectField(label="Operational Status", choices=op_status_choices)
-        submit = SubmitField("Save New Asset")
+        submit = SubmitField("Save Asset")
     return NewAssetForm()
 
 class NewGroup(FlaskForm):
