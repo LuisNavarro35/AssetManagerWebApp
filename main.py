@@ -270,24 +270,21 @@ def new_location():
     return render_template("createlocation.html", form=new_location_form)
 
 
-@app.route('/delete-data', methods=["GET", "POST"])
+@app.route("/asset/<sn>/delete", methods=["POST"])
 @login_required
 @admin_required
-def delete_data():
-    delete_asset_form= DeleteDataAsset()
+def delete_asset(sn):
+    asset = db.session.query(Asset).filter_by(sn=sn).first()
+    if not asset:
+        return "Asset not found", 404
 
-    if delete_asset_form.validate_on_submit():
-        asset_to_delete = db.session.query(Asset).where(Asset.sn == delete_asset_form.asset_sn.data).scalar()
+    #delete related maintenance records first
+    db.session.query(Maintenance).filter_by(sn=sn).delete()
 
-        if asset_to_delete:
-            db.session.query(Maintenance).filter_by(asset_id=asset_to_delete.id).delete()
-            db.session.delete(asset_to_delete)
-            db.session.commit()
-            flash(f"Asset with SN: {delete_asset_form.asset_sn.data} deleted successfully")
-        else:
-            flash(f"Asset {delete_asset_form.asset_sn.data} not found")
-
-    return render_template("deletedata.html", form=delete_asset_form)
+    db.session.delete(asset)
+    db.session.commit()
+    flash("Asset deleted successfully.", "success")
+    return redirect(url_for("home"))
 
 @app.route('/delete-group', methods=["GET", "POST"])
 @login_required
