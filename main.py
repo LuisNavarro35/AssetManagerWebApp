@@ -158,7 +158,7 @@ def assign_asset():
             flash('asset was succesfully assign to a group', 'success')
             return redirect(url_for("home"))
         else:
-            flash("Asset doesn't Exist, Check spelling")
+            flash("Asset doesn't Exist, Check spelling", "danger")
     return render_template("assign_asset.html", form=assign_asset_form, all_assets=all_assets)
 
 
