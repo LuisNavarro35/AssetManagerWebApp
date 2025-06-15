@@ -196,7 +196,7 @@ def maintenance_event():
         if asset_maintenance:
             new_maintenance_event= Maintenance(sn=maintenance_event_form.sn.data,
                                                    name=asset_maintenance.name,
-                                                   date=date.today().strftime("%B %d, %Y"),
+                                                   date=date.today().strftime('%Y-%m-%d'),
                                                    event_description=maintenance_event_form.description.data,
                                                    user=current_user.username,
                                                    op_status=maintenance_event_form.op_status.data,

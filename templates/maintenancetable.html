@@ -125,6 +125,11 @@
           const input = th.find('input');
           const select = th.find('select');
 
+          $('#minDate, #maxDate').on('change', function () {
+          table.draw();
+          });
+
+
           // text input
           if (input.length) {
             input.on('keyup change clear', function () {
@@ -163,4 +168,26 @@
       });
     }
   });
+
+
+  // Custom filter for date range
+$.fn.dataTable.ext.search.push(
+  function (settings, data, dataIndex) {
+    const min = $('#minDate').val();
+    const max = $('#maxDate').val();
+    const date = data[2]; // 'Date' is the third column (index 2)
+
+    if (!min && !max) return true;
+
+    const parsedDate = new Date(date);
+    const parsedMin = min ? new Date(min) : null;
+    const parsedMax = max ? new Date(max) : null;
+
+    if ((parsedMin === null || parsedDate >= parsedMin) &&
+        (parsedMax === null || parsedDate <= parsedMax)) {
+      return true;
+    }
+    return false;
+  }
+);
 </script>
