@@ -429,6 +429,7 @@ def edit_asset(sn):
 
         db.session.commit()
 
+        flash(f'Asset {edit_asset_form.sn.data} was edited successfully', 'success')
         return redirect(url_for("asset_detail", sn=asset_selected.sn))
 
 
