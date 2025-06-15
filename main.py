@@ -301,7 +301,7 @@ def delete_asset(sn):
 
     db.session.delete(asset)
     db.session.commit()
-    flash('Asset {asset.sn} deleted successfully.', "success")
+    flash(f'Asset {asset.sn} deleted successfully.', "success")
 
     return redirect(url_for("home"))
 
