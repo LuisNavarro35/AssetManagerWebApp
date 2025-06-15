@@ -155,6 +155,7 @@ def assign_asset():
             edit_asset.district = asset_location.district
             db.session.commit()
             print("asset was succesfully assign to a group")
+            flash('asset was succesfully assign to a group', 'success')
             return redirect(url_for("home"))
         else:
             flash("Asset doesn't Exist, Check spelling")
@@ -173,6 +174,7 @@ def move_group():
             asset.district= asset_location.district
             db.session.commit()
         print("asset group was successfully assign to a Location / District")
+        flash(f'asset {assign_group_form.asset_group.data} group was successfully assign to a Location / District', 'success')
         return redirect(url_for("home"))
     return render_template("assetgroup.html", form=assign_group_form)
 
@@ -206,7 +208,7 @@ def maintenance_event():
             return redirect(url_for('maintenance_history', sn= sn_prefill))
 
         else:
-            flash("Asset doesn't exist, Please create New Asset")
+            flash("Asset doesn't exist, Please create New Asset", "danger")
     return render_template("createmaintenance.html", form=maintenance_event_form)
 
 
@@ -230,7 +232,7 @@ def new_asset():
         old_asset =db.session.query(Asset).where(Asset.sn == new_asset_form.sn.data).scalar()
         asset_location= db.session.query(AssetLocations).where(AssetLocations.name == new_asset_form.asset_group_location.data).scalar()
         if old_asset:
-            flash(f"The asset {new_asset_form.sn.data} already exist")
+            flash(f"The asset {new_asset_form.sn.data} already exist", "danger")
 
         else:
             new_asset_element = Asset(sn=new_asset_form.sn.data,
@@ -242,7 +244,7 @@ def new_asset():
                                       op_status=new_asset_form.op_status.data)
             db.session.add(new_asset_element)
             db.session.commit()
-            print("New asset was created successfully")
+            flash(f'Asset {new_asset_form.sn.data} was Created successfully', 'success')
             return redirect(url_for("home"))
     return render_template("createasset.html", form=new_asset_form)
 
@@ -255,12 +257,13 @@ def new_assetgroup():
     if new_assetgroup_form.validate_on_submit():
         old_assetgroup = db.session.query(AssetGroups).where(AssetGroups.name == new_assetgroup_form.new_group.data).scalar()
         if old_assetgroup:
-            flash("Asset Group Already Exist")
+            flash(f"Asset Group {new_assetgroup_form.new_group.data} Already Exist", "danger")
         else:
             new_group = AssetGroups(name=new_assetgroup_form.new_group.data)
             db.session.add(new_group)
             db.session.commit()
             print(f"New Asset group {new_assetgroup_form.new_group.data} was created successfully")
+            flash(f"Asset Group {new_assetgroup_form.new_group.data} was created successfully", "success")
             return redirect(url_for("home"))
     return render_template("creategroup.html", form=new_assetgroup_form)
 
@@ -273,13 +276,14 @@ def new_location():
     if new_location_form.validate_on_submit():
         old_location = db.session.query(AssetLocations).where(AssetLocations.name == new_location_form.new_location.data).scalar()
         if old_location:
-            flash("Location Already Exists")
+            flash(f"Location {new_location_form.new_location.data} Already Exists", "danger")
         else:
             new_asset_location = AssetLocations(name=new_location_form.new_location.data,
                                                 district=new_location_form.district.data)
             db.session.add(new_asset_location)
             db.session.commit()
             print("New location was created successfully")
+            flash(f"Location {new_location_form.new_location.data} was created successfully", "success")
             return redirect(url_for("home"))
     return render_template("createlocation.html", form=new_location_form)
 
@@ -297,7 +301,8 @@ def delete_asset(sn):
 
     db.session.delete(asset)
     db.session.commit()
-    flash("Asset deleted successfully.", "success")
+    flash('Asset {asset.sn} deleted successfully.', "success")
+
     return redirect(url_for("home"))
 
 @app.route('/delete-group', methods=["GET", "POST"])
@@ -312,9 +317,9 @@ def delete_group():
         if group_to_delete:
             db.session.delete(group_to_delete)
             db.session.commit()
-            flash(f"Group {delete_group_form.asset_groups.data} has been deleted successfully")
+            flash(f"Group {delete_group_form.asset_groups.data} has been deleted successfully", "success")
         else:
-            flash("Select a group to delete")
+            flash("Select a group to delete", "danger")
 
     return render_template("deletegroup.html", form=delete_group_form)
 
@@ -330,9 +335,9 @@ def delete_location():
         if location_to_delete:
             db.session.delete(location_to_delete)
             db.session.commit()
-            flash(f"Location {delete_location_form.field_locations.data} has been deleted successfully")
+            flash(f"Location {delete_location_form.field_locations.data} has been deleted successfully", "success")
         else:
-            flash("Select a Field Location to Delete")
+            flash("Select a Field Location to Delete", "danger")
 
     return render_template("deletelocation.html", form=delete_location_form)
 
