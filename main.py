@@ -491,7 +491,7 @@ def repair_asset(event_id):
         db.session.commit()
         update_asset_status(asset_sn=event.sn)
         flash("Maintenance event updated successfully.", "success")
-        return redirect(url_for("maintenance_history"))
+        return redirect(url_for("maintenance_history", sn=event.sn))
 
     return render_template("repair_asset.html", form=form, event=event)
 
