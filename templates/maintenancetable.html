@@ -29,6 +29,12 @@
     color: #155724 !important; font-weight: bold;
   }
 
+  .status-repaired {
+    background-color: #abd1fc !important;
+    color: #155724 !important; font-weight: bold;
+  }
+
+
     .date-filter-row {
   display: flex;
   justify-content: space-between;
@@ -49,6 +55,12 @@
   font-size: 0.85em;
 }
 
+
+.table-active {
+    background-color: #abd1fc !important;
+    font-weight: bold;
+  }
+
 </style>
 
 
@@ -59,7 +71,13 @@
     Maintenance History
   </div>
   <div class="card-body">
+      <form method="GET" action="{{ url_for('repair_asset_redirect') }}">
+      <!-- Hidden input to store selected event ID -->
+      <input type="hidden" name="event_id" id="selectedEventId">
+
     <table id="maintenanceTable" class="display table table-striped table-bordered">
+
+
       <thead>
         <tr>
           <th>SN</th>
@@ -92,7 +110,7 @@
       </thead>
       <tbody>
         {% for record in records %}
-        <tr>
+        <tr onclick="selectRow(this, {{ record.id }})">
           <td>{{ record.sn }}</td>
           <td>{{ record.name }}</td>
           <td>{{ record.date }}</td>
@@ -103,6 +121,12 @@
         {% endfor %}
       </tbody>
     </table>
+
+         <!-- Repair Button -->
+      <button type="submit" class="btn btn-primary mt-3">Repair Selected Event</button>
+
+      </form>
+
   </div>
 </div>
 
@@ -165,10 +189,10 @@
         if (txt==='bad')       cell.addClass('status-bad');
         else if (txt==='warning') cell.addClass('status-warning');
         else if (txt==='good')    cell.addClass('status-good');
+        else if (txt==='repaired')    cell.addClass('status-repaired');
       });
     }
   });
-
 
   // Custom filter for date range
 $.fn.dataTable.ext.search.push(
@@ -190,4 +214,21 @@ $.fn.dataTable.ext.search.push(
     return false;
   }
 );
+
+// Select the event id event to repair
+    let selectedRow = null;
+
+  function selectRow(row, eventId) {
+    // Store the selected event ID in the hidden input
+    document.getElementById("selectedEventId").value = eventId;
+
+    // Optional: Highlight the selected row visually
+    if (selectedRow) {
+      selectedRow.classList.remove("table-active");
+    }
+    selectedRow = row;
+    selectedRow.classList.add("table-active");
+  }
+
+
 </script>

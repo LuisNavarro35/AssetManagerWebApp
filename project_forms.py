@@ -74,3 +74,7 @@ class RegisterUserForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
     is_admin = BooleanField('Admin')
     submit = SubmitField('Register User')
+
+class RepairForm(FlaskForm):
+    repair_description = StringField("Repair Description", validators=[DataRequired()])
+    submit = SubmitField("Submit Repair")

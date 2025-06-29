@@ -4,7 +4,7 @@ from flask_bootstrap import Bootstrap5
 
 #_____________________________________________Project Libraries_________________________________________________________
 
-from project_forms import AssignAsset, AssignAssetGroup, MaintenanceEvent, NewAsset, NewGroup, NewLocation, DeleteDataAsset, DeleteDataGroup, DeleteDataLocation, LoginForm, RegisterUserForm
+from project_forms import AssignAsset, AssignAssetGroup, MaintenanceEvent, NewAsset, NewGroup, NewLocation, DeleteDataAsset, DeleteDataGroup, DeleteDataLocation, LoginForm, RegisterUserForm, RepairForm
 from functools import wraps
 
 import os
@@ -446,6 +446,46 @@ def edit_asset(sn):
         edit_asset_form.asset_group_location.data= asset_selected.location
 
     return render_template("edit_asset.html", form=edit_asset_form)
+
+
+@app.route('/repair-asset/<int:event_id>', methods=['GET', 'POST'])
+@login_required
+def repair_asset(event_id):
+    event = db.session.query(Maintenance).get(event_id)
+
+    if not event:
+        flash("Maintenance event not found.", "danger")
+        return redirect(url_for("maintenance_history"))
+
+    form = RepairForm()
+
+    if form.validate_on_submit():
+        # Append to the event description
+        repair_date = date.today().strftime('%Y-%m-%d')
+        repair_user= current_user.username
+        event.event_description += f"\n{repair_date} by {repair_user}\nRepair: {form.repair_description.data}"
+        # Update the status
+        event.op_status = "Repaired"
+
+        db.session.commit()
+        flash("Maintenance event updated successfully.", "success")
+        return redirect(url_for("maintenance_history"))
+
+    return render_template("repair_asset.html", form=form, event=event)
+
+@app.route('/repair-asset-redirect', methods=['GET'])
+@login_required
+def repair_asset_redirect():
+    event_id = request.args.get('event_id', type=int)
+    if event_id:
+        return redirect(url_for('repair_asset', event_id=event_id))
+    flash("Please select a maintenance event first.", "warning")
+    return redirect(url_for('maintenance_history'))
+
+@app.template_filter('nl2br')
+def nl2br(value):
+    return value.replace('\n', '<br>')
+
 
 if __name__ == "__main__":
     app.run(debug=False, host="0.0.0.0", port=80)
