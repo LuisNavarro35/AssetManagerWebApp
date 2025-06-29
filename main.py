@@ -120,6 +120,27 @@ def get_locations():
 
     return ASSET_LOCATIONS
 
+def update_asset_status(asset_sn):
+    # Get all maintenance events for this asset
+    events = db.session.query(Maintenance).filter_by(sn=asset_sn).all()
+
+    # Determine new status based on rules
+    status = "good"  # default
+
+    for event in events:
+        if event.op_status.lower() == "bad":
+            status = "bad"
+            break  # highest priority, stop checking
+        elif event.op_status.lower() == "warning":
+            status = "warning"
+            # don't break — might still find a "bad" status
+
+    # Update the asset's operational status
+    asset = db.session.query(Asset).filter_by(sn=asset_sn).first()
+    if asset:
+        asset.op_status = status
+        db.session.commit()
+
 #____________________________________admin_required decorator__________________________________________________________
 def admin_required(f):
     @wraps(f)
@@ -202,8 +223,9 @@ def maintenance_event():
                                                    op_status=maintenance_event_form.op_status.data,
                                                    parent_asset=asset_maintenance)
             db.session.add(new_maintenance_event)
-            asset_maintenance.op_status = maintenance_event_form.op_status.data
             db.session.commit()
+
+            update_asset_status(asset_sn=maintenance_event_form.sn.data)
             flash("Maintenance event created successfully!", "success")
             return redirect(url_for('maintenance_history', sn= sn_prefill))
 
@@ -466,8 +488,8 @@ def repair_asset(event_id):
         event.event_description += f"\n{repair_date} by {repair_user}\nRepair: {form.repair_description.data}"
         # Update the status
         event.op_status = "Repaired"
-
         db.session.commit()
+        update_asset_status(asset_sn=event.sn)
         flash("Maintenance event updated successfully.", "success")
         return redirect(url_for("maintenance_history"))
 
