@@ -17,9 +17,44 @@
 
            <h3>Edit Asset</h3>
 
-                <div class="col-xl-6">
-                    {{ render_form(form) }}
+                <form method="POST">
+                {{ form.hidden_tag() }}
+
+                <div class="form-group">
+                {{ form.sn.label(class="form-label") }}
+                {{ form.sn(class="form-control") }}
                 </div>
+
+                <div class="form-group">
+                {{ form.name.label(class="form-label") }}
+                {{ form.name(class="form-control") }}
+                </div>
+
+                <div class="form-group">
+                {{ form.asset_group.label(class="form-label") }}
+                {{ form.asset_group(class="form-control") }}
+                </div>
+
+                <div class="form-group">
+                {{ form.description.label(class="form-label") }}
+                {{ form.description(class="form-control") }}
+                </div>
+
+                <div class="form-group">
+                {{ form.asset_group_location.label(class="form-label") }}
+                {{ form.asset_group_location(class="form-control") }}
+                </div>
+
+                <!-- Operational Status (Disabled) -->
+                <div class="form-group">
+                {{ form.op_status.label(class="form-label") }}
+                {{ form.op_status(class="form-control", disabled=True) }}
+                </div>
+
+                <div class="form-group mt-3">
+                {{ form.submit(class="btn btn-primary") }}
+                </div>
+                </form>
 
 
             </div>

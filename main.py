@@ -439,7 +439,7 @@ def edit_asset(sn):
         asset_selected.description= edit_asset_form.description.data
         asset_selected.asset_group= edit_asset_form.asset_group.data
         asset_selected.location= edit_asset_form.asset_group_location.data
-        #asset_selected.op_status = edit_asset_form.op_status.data
+        #asset_selected.op_status = edit_asset_form.op_status.data # This is omited since user needs to create a maintenance event instead
 
         asset_location = db.session.query(AssetLocations).where(
             AssetLocations.name == edit_asset_form.asset_group_location.data).scalar()
