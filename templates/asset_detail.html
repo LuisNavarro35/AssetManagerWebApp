@@ -22,7 +22,7 @@
             <tr><th>Serial Number</th><td>{{ asset.sn }}</td></tr>
             <tr><th>Name</th><td>{{ asset.name }}</td></tr>
             <tr><th>Asset Group</th><td>{{ asset.asset_group}}</td></tr>
-            <tr><th>Description</th><td>{{ asset.description }}</td></tr>
+            <tr><th>Description</th><td>{{ asset.description | urlize(target="_blank") }}</td></tr>
             <tr><th>Location</th><td>{{ asset.location}}</td></tr>
             <tr><th>District</th><td>{{ asset.district }}</td></tr>
             <tr><th>Status</th><td>{{ asset.op_status }}</td></tr>
