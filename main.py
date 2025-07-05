@@ -271,7 +271,13 @@ def new_asset():
                                       description=new_asset_form.description.data,
                                       location=new_asset_form.asset_group_location.data,
                                       district=asset_location.district,
-                                      op_status=new_asset_form.op_status.data)
+                                      op_status=new_asset_form.op_status.data,
+                                      expiration_date=new_asset_form.expiration_date.data,)
+
+            uploaded_file = new_asset_form.file_data.data
+            if uploaded_file:
+                new_asset_element.file_data = uploaded_file.read()
+
             db.session.add(new_asset_element)
             db.session.commit()
             flash(f'Asset {new_asset_form.sn.data} was Created successfully', 'success')
@@ -454,6 +460,11 @@ def edit_asset(sn):
 
         asset_selected.district= asset_location.district
 
+        asset_selected.expiration_date = edit_asset_form.expiration_date.data
+        uploaded_file = edit_asset_form.file_data.data
+        if uploaded_file:
+            asset_selected.file_data = uploaded_file.read()
+
         if original_asset_sn != edit_asset_form.sn.data:
             db.session.query(Maintenance).filter_by(sn=original_asset_sn).update({"sn": edit_asset_form.sn.data})
 
@@ -474,6 +485,7 @@ def edit_asset(sn):
         edit_asset_form.asset_group.data= asset_selected.asset_group
     if asset_selected.location in get_locations():
         edit_asset_form.asset_group_location.data= asset_selected.location
+    edit_asset_form.expiration_date.data = asset_selected.expiration_date
 
     return render_template("edit_asset.html", form=edit_asset_form)
 
@@ -516,6 +528,18 @@ def repair_asset_redirect():
 def nl2br(value):
     return value.replace('\n', '<br>')
 
+@app.route('/assets/<int:asset_id>/download')
+def download_asset_file(asset_id):
+    asset = Asset.query.get_or_404(asset_id)
+    if not asset.file_data:
+        flash("No file uploaded for this asset.", "warning")
+        return redirect(url_for('asset_detail', id=asset.id))
+
+    return Response(
+        asset.file_data,
+        mimetype="application/octet-stream",
+        headers={"Content-Disposition": f"attachment;filename=asset_file_{asset.id}"}
+    )
 
 if __name__ == "__main__":
     app.run(debug=False, host="0.0.0.0", port=80)

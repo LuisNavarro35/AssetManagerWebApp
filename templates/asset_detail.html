@@ -26,6 +26,10 @@
             <tr><th>Location</th><td>{{ asset.location}}</td></tr>
             <tr><th>District</th><td>{{ asset.district }}</td></tr>
             <tr><th>Status</th><td>{{ asset.op_status }}</td></tr>
+
+            <tr><th>Expiration Date:</th><td>{% if asset.expiration_date %}{{ asset.expiration_date.strftime('%Y-%m-%d') }}{% endif %}</td></tr>
+            <tr><th>Uploaded File: </th><td>{% if asset.file_data %}<a href="{{ url_for('download_asset_file', asset_id=asset.id) }}">Download File</a>{% endif %}</td></tr>
+
             </table>
             <a href="{{ url_for('home') }}" class="btn btn-primary">Back to Assets</a>
             <a href="{{ url_for('edit_asset', sn=asset.sn) }}" class="btn btn-warning">Edit Asset</a>
