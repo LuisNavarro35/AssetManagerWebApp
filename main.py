@@ -1,5 +1,5 @@
 #________________________________________________flask libraries_______________________________________________________
-from flask import Flask, render_template, redirect, url_for, flash, abort, request, Response
+from flask import Flask, render_template, redirect, url_for, flash, abort, request, Response, send_file
 from flask_bootstrap import Bootstrap5
 from flask_migrate import Migrate
 
@@ -9,6 +9,7 @@ from project_forms import AssignAsset, AssignAssetGroup, MaintenanceEvent, NewAs
 from functools import wraps
 
 import os
+from io import BytesIO
 from dotenv import load_dotenv
 from datetime import date
 
@@ -535,10 +536,11 @@ def download_asset_file(asset_id):
         flash("No file uploaded for this asset.", "warning")
         return redirect(url_for('asset_detail', id=asset.id))
 
-    return Response(
-        asset.file_data,
-        mimetype="application/octet-stream",
-        headers={"Content-Disposition": f"attachment;filename=asset_file_{asset.id}"}
+    return send_file(
+        BytesIO(asset.file_data),
+        as_attachment=True,
+        download_name=f"asset_file_{asset.id}",
+        mimetype="application/octet-stream"
     )
 
 if __name__ == "__main__":
