@@ -29,6 +29,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 #__________________________________________________initialize flask app_________________________________________________
 app = Flask(__name__)
+app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  # 5 megabytes
 app.config['SECRET_KEY'] = os.getenv("FLASK_SECRET_KEY")
 Bootstrap5(app)
 
