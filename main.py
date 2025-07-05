@@ -1,6 +1,7 @@
 #________________________________________________flask libraries_______________________________________________________
-from flask import Flask, render_template, redirect, url_for, flash, abort, request
+from flask import Flask, render_template, redirect, url_for, flash, abort, request, Response
 from flask_bootstrap import Bootstrap5
+from flask_migrate import Migrate
 
 #_____________________________________________Project Libraries_________________________________________________________
 
@@ -11,11 +12,13 @@ import os
 from dotenv import load_dotenv
 from datetime import date
 
+from typing import Optional
+
 #________________________________________________sqlalchemy libraries__________________________________________________
 from flask_login import UserMixin, login_user, LoginManager, current_user, logout_user, login_required
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship, DeclarativeBase, Mapped, mapped_column
-from sqlalchemy import Integer, String, Text, ForeignKey
+from sqlalchemy import Integer, String, Text, ForeignKey, LargeBinary, Date
 
 #_______________________________________________load enviroment variables_______________________________________________
 load_dotenv()
@@ -42,6 +45,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://admin:assetkey@a
 db = SQLAlchemy(model_class=Base)
 db.init_app(app)
 
+migrate = Migrate(app, db)
+
 #_______________________________________create tables in database______________________________________________________
 #Create asset table
 class Asset(db.Model):
@@ -54,6 +59,9 @@ class Asset(db.Model):
     location: Mapped[str]= mapped_column(String(250), nullable=False)
     district: Mapped[str]= mapped_column(String(250), nullable=False)
     op_status: Mapped[str]= mapped_column(String(250), nullable=False)
+
+    file_data: Mapped[Optional[bytes]] = mapped_column(LargeBinary, nullable=True)
+    expiration_date: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
 
     maintenance= relationship("Maintenance", back_populates="parent_asset")
 

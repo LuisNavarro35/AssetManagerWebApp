@@ -2,6 +2,8 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, PasswordField, SelectField, TextAreaField, BooleanField
 from wtforms.validators import DataRequired, Length
+from flask_wtf.file import FileField, FileAllowed
+from wtforms.fields import DateField
 
 
 district_choices = ["Victoria", "Midland", "Pennsylvania"]
@@ -36,6 +38,13 @@ def NewAsset(group_choices, location_choices):
         description = StringField(label="Description", validators=[DataRequired()])
         asset_group_location = SelectField(label="Select Location", choices=location_choices)
         op_status = SelectField(label="Operational Status", choices=op_status_choices)
+
+        file_data = FileField("Upload File", validators=[
+            FileAllowed(['pdf', 'jpg', 'png', 'docx'], 'Only PDF, image, or document files allowed.')
+        ])
+        expiration_date = DateField("Expiration Date", format='%Y-%m-%d', validators=[],
+                                    render_kw={"placeholder": "YYYY-MM-DD"})
+
         submit = SubmitField("Save Asset")
     return NewAssetForm()
 
