@@ -539,7 +539,7 @@ def download_asset_file(asset_id):
     return send_file(
         BytesIO(asset.file_data),
         as_attachment=True,
-        download_name=f"asset_file_{asset.id}",
+        download_name=f"asset_file_{asset.sn}",
         mimetype="application/octet-stream"
     )
 
