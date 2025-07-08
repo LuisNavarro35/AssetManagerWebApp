@@ -1,7 +1,7 @@
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, PasswordField, SelectField, TextAreaField, BooleanField
-from wtforms.validators import DataRequired, Length
+from wtforms.validators import DataRequired, Length, Optional
 from flask_wtf.file import FileField, FileAllowed
 from wtforms.fields import DateField
 
@@ -42,7 +42,7 @@ def NewAsset(group_choices, location_choices):
         file_data = FileField("Upload File", validators=[
             FileAllowed(['pdf', 'jpg', 'png', 'docx'], 'Only PDF, image, or document files allowed.')
         ])
-        expiration_date = DateField("Expiration Date", format='%Y-%m-%d', validators=[],
+        expiration_date = DateField("Expiration Date", format='%Y-%m-%d', validators=[Optional()],
                                     render_kw={"placeholder": "YYYY-MM-DD"})
 
         submit = SubmitField("Save Asset")
