@@ -6,6 +6,7 @@ from flask_migrate import Migrate
 #_____________________________________________Project Libraries_________________________________________________________
 
 from project_forms import AssignAsset, AssignAssetGroup, MaintenanceEvent, NewAsset, NewGroup, NewLocation, DeleteDataAsset, DeleteDataGroup, DeleteDataLocation, LoginForm, RegisterUserForm, RepairForm
+from check_expirations import check_asset_expirations
 from functools import wraps
 
 import os
@@ -15,6 +16,7 @@ from dotenv import load_dotenv
 from datetime import date
 
 from typing import Optional
+
 
 #________________________________________________sqlalchemy libraries__________________________________________________
 from flask_login import UserMixin, login_user, LoginManager, current_user, logout_user, login_required
@@ -491,6 +493,7 @@ def edit_asset(sn):
             db.session.query(Maintenance).filter_by(sn=original_asset_sn).update({"sn": edit_asset_form.sn.data})
 
         db.session.commit()
+        check_asset_expirations()
 
         flash(f'Asset {edit_asset_form.sn.data} was edited successfully', 'success')
         return redirect(url_for("asset_detail", sn=asset_selected.sn))
