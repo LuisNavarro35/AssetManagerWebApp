@@ -9,6 +9,7 @@ from project_forms import AssignAsset, AssignAssetGroup, MaintenanceEvent, NewAs
 from functools import wraps
 
 import os
+import mimetypes
 from io import BytesIO
 from dotenv import load_dotenv
 from datetime import date
@@ -26,6 +27,7 @@ load_dotenv()
 
 #________________________________________________ werkzeug libraries____________________________________________________
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 
 #__________________________________________________initialize flask app_________________________________________________
 app = Flask(__name__)
@@ -280,7 +282,13 @@ def new_asset():
 
             uploaded_file = new_asset_form.file_data.data
             if uploaded_file:
+                # Get file extension
+                filename = secure_filename(uploaded_file.filename)
+                file_ext = os.path.splitext(filename)[1]  # e.g., '.pdf', '.jpg'
+
+                # Store binary + extension
                 new_asset_element.file_data = uploaded_file.read()
+                new_asset_element.file_extension = file_ext.lower()  # Save in lowercase for consistency
 
             db.session.add(new_asset_element)
             db.session.commit()
@@ -465,9 +473,19 @@ def edit_asset(sn):
         asset_selected.district= asset_location.district
 
         asset_selected.expiration_date = edit_asset_form.expiration_date.data
+
         uploaded_file = edit_asset_form.file_data.data
+
         if uploaded_file:
+            # Get file extension
+            filename = secure_filename(uploaded_file.filename)
+            file_ext = os.path.splitext(filename)[1]  # e.g., '.pdf', '.jpg'
+
+            # Store binary + extension
             asset_selected.file_data = uploaded_file.read()
+            asset_selected.file_extension = file_ext.lower()  # Save in lowercase for consistency
+
+
 
         if original_asset_sn != edit_asset_form.sn.data:
             db.session.query(Maintenance).filter_by(sn=original_asset_sn).update({"sn": edit_asset_form.sn.data})
@@ -535,15 +553,24 @@ def nl2br(value):
 @app.route('/assets/<int:asset_id>/download')
 def download_asset_file(asset_id):
     asset = Asset.query.get_or_404(asset_id)
+
     if not asset.file_data:
         flash("No file uploaded for this asset.", "warning")
         return redirect(url_for('asset_detail', id=asset.id))
 
+    # Determine file extension and build filename
+    extension = asset.file_extension or ''
+    filename = f"asset_file_{asset.sn}{extension}"
+
+    # Guess MIME type from extension
+    mime_type, _ = mimetypes.guess_type(filename)
+    mime_type = mime_type or 'application/octet-stream'
+
     return send_file(
         BytesIO(asset.file_data),
         as_attachment=True,
-        download_name=f"asset_file_{asset.sn}",
-        mimetype="application/octet-stream"
+        download_name=filename,
+        mimetype=mime_type
     )
 
 if __name__ == "__main__":
