@@ -63,6 +63,8 @@ class Asset(db.Model):
     op_status: Mapped[str]= mapped_column(String(250), nullable=False)
 
     file_data: Mapped[Optional[bytes]] = mapped_column(LargeBinary, nullable=True)
+    file_extension: Mapped[Optional[str]] = mapped_column(String(10), nullable=True)
+
     expiration_date: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
 
     maintenance= relationship("Maintenance", back_populates="parent_asset")
