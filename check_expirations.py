@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta, date
 from main import app, db, Asset, Maintenance, update_asset_status
-from flask_login import current_user
 
 with app.app_context():
     today = date.today()
@@ -13,38 +12,52 @@ with app.app_context():
         if not exp_date:
             continue
 
+        # Fetch all maintenance events related to expiration
         events = Maintenance.query.filter_by(parent_asset=asset).all()
 
-        has_bad_event = any(
-            "expired" in e.event_description.lower() and e.op_status.lower() == "bad"
-            for e in events
-        )
-        if has_bad_event:
-            continue  # Skip asset already marked as expired
+        has_bad_event = None
+        has_warning_event = None
 
-        has_warning_event = any(
-            "about to expire" in e.event_description.lower() and e.op_status.lower() == "warning"
-            for e in events
-        )
+        for e in events:
+            desc = e.event_description.lower()
+            status = e.op_status.lower()
+            if "expired" in desc and status == "bad":
+                has_bad_event = e
+            elif "about to expire" in desc and status == "warning":
+                has_warning_event = e
 
+        # ✅ CASE 1: Asset expiration date now GOOD — remove warning/bad
+        if exp_date > one_month_later:
+            for event in [has_bad_event, has_warning_event]:
+                if event:
+                    event.op_status = "Repaired"
+                    event.event_description = "Asset expiration resolved"
+                    event.date = today.strftime('%Y-%m-%d')
+                    event.user = "System"
+                    db.session.add(event)
+                    db.session.commit()
+                    update_asset_status(asset.sn)
+            continue  # Skip rest since asset is no longer close to expiring
+
+        # ✅ CASE 2: Expired asset → create "bad" event (only if not exists)
         if exp_date < today:
-            # Asset expired - create a new "bad" event
-            new_maintenance_event = Maintenance(
-                sn=asset.sn,
-                name=asset.name,
-                date=today.strftime('%Y-%m-%d'),
-                event_description="Asset is expired",
-                user="System",  # or current_user.username if available
-                op_status="Bad",
-                parent_asset=asset
-            )
-            db.session.add(new_maintenance_event)
-            db.session.commit()
-            update_asset_status(asset.sn)
+            if not has_bad_event:
+                new_maintenance_event = Maintenance(
+                    sn=asset.sn,
+                    name=asset.name,
+                    date=today.strftime('%Y-%m-%d'),
+                    event_description="Asset is expired",
+                    user="System",
+                    op_status="Bad",
+                    parent_asset=asset
+                )
+                db.session.add(new_maintenance_event)
+                db.session.commit()
+                update_asset_status(asset.sn)
 
+        # ✅ CASE 3: Asset expiring soon → create "warning" event
         elif today <= exp_date <= one_month_later:
             if not has_warning_event:
-                # Asset about to expire - create warning event
                 new_maintenance_event = Maintenance(
                     sn=asset.sn,
                     name=asset.name,
@@ -58,5 +71,5 @@ with app.app_context():
                 db.session.commit()
                 update_asset_status(asset.sn)
 
+    print("Asset expiration check completed.")
 
-    print("Maintenance events updated based on expiration dates.")
