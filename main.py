@@ -139,14 +139,14 @@ def update_asset_status(asset_sn):
     events = db.session.query(Maintenance).filter_by(sn=asset_sn).all()
 
     # Determine new status based on rules
-    status = "good"  # default
+    status = "Good"  # default
 
     for event in events:
         if event.op_status.lower() == "bad":
-            status = "bad"
+            status = "Bad"
             break  # highest priority, stop checking
         elif event.op_status.lower() == "warning":
-            status = "warning"
+            status = "Warning"
             # don't break — might still find a "bad" status
 
     # Update the asset's operational status
