@@ -228,7 +228,7 @@ def check_expirations():
                     db.session.commit()
                     update_asset_status(asset.sn)
 
-        print("Asset expiration check completed.")
+        print(f"Asset expiration check completed. at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
 #____________________________________admin_required decorator__________________________________________________________
 def admin_required(f):
@@ -367,6 +367,9 @@ def new_asset():
 
             db.session.add(new_asset_element)
             db.session.commit()
+
+            check_expirations()
+
             flash(f'Asset {new_asset_form.sn.data} was Created successfully', 'success')
             return redirect(url_for("home"))
     return render_template("createasset.html", form=new_asset_form)
