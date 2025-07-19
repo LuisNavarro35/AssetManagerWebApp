@@ -71,5 +71,5 @@ with app.app_context():
                 db.session.commit()
                 update_asset_status(asset.sn)
 
-    print("Asset expiration check completed.")
+    print(f"Asset expiration check completed. at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
