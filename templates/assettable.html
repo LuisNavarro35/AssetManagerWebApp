@@ -148,7 +148,7 @@
 
         function applyStatusColors() {
             $('#assetsTable tbody tr').each(function () {
-                const statusCell = $(this).find('td').eq(6); // status is 7th column (index 6)
+                const statusCell = $(this).find('td').eq(7); // status is 8th column (index 7)
                 const statusText = statusCell.text().trim().toLowerCase();
 
                 statusCell.removeClass('status-bad status-warning status-good');
