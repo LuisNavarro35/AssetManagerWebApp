@@ -63,6 +63,7 @@
         <th>Description</th>
         <th>Location</th>
         <th>District</th>
+        <th>Exp Date</th>
         <th>Status</th>
     </tr>
     <tr>
@@ -72,6 +73,7 @@
         <th><input type="text" placeholder="Filter Description" /></th>
         <th><select><option value="">All</option></select></th>  <!-- Location -->
         <th><select><option value="">All</option></select></th>  <!-- District -->
+        <th><select><option value="">All</option></select></th>  <!-- Exp Date -->
         <th><select><option value="">All</option></select></th>  <!-- Status -->
     </tr>
 </thead>
@@ -85,6 +87,7 @@
             <td>{{ asset.description }}</td>
             <td>{{ asset.location }}</td>
             <td>{{ asset.district }}</td>
+            <td>{{ asset.expiration_date }}</td>
             <td>{{ asset.op_status }}</td>
         </tr>
         {% endfor %}
