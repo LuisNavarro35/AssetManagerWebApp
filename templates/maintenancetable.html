@@ -82,6 +82,7 @@
         <tr>
           <th>SN</th>
           <th>Name</th>
+          <th>Asset Group</th>
           <th>Date</th>
           <th>Event</th>
           <th>User</th>
@@ -90,6 +91,7 @@
         <tr>
   <th><input type="text" placeholder="Filter SN" /></th>
   <th><input type="text" placeholder="Filter Name" /></th>
+  <th><input type="text" placeholder="Filter Group" /></th>
   <th>
   <div class="date-filter-row">
     <span>From</span>
@@ -113,6 +115,7 @@
         <tr onclick="selectRow(this, {{ record.id }})">
           <td>{{ record.sn }}</td>
           <td>{{ record.name }}</td>
+          <td>{{ record.parent_asset.asset_group if record.parent_asset else 'N/A' }}</td>
           <td>{{ record.date }}</td>
           <td>{{ record.event_description }}</td>
           <td>{{ record.user }}</td>
