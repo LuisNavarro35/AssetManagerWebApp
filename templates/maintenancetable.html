@@ -186,7 +186,7 @@
 
     function applyStatusColors() {
       $('#maintenanceTable tbody tr').each(function () {
-        const cell = $(this).find('td').eq(5);
+        const cell = $(this).find('td').eq(6);
         const txt = cell.text().trim().toLowerCase();
         cell.removeClass('status-bad status-warning status-good');
         if (txt==='bad')       cell.addClass('status-bad');
@@ -202,7 +202,7 @@ $.fn.dataTable.ext.search.push(
   function (settings, data, dataIndex) {
     const min = $('#minDate').val();
     const max = $('#maxDate').val();
-    const date = data[2]; // 'Date' is the third column (index 2)
+    const date = data[3]; // 'Date' is the third column (index 3)
 
     if (!min && !max) return true;
 
