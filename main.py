@@ -26,6 +26,8 @@ from sqlalchemy import Integer, String, Text, ForeignKey, LargeBinary, Date
 
 #_______________________________________________load enviroment variables_______________________________________________
 load_dotenv()
+import config
+from connection import get_connection
 
 #________________________________________________ werkzeug libraries____________________________________________________
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -47,7 +49,7 @@ login_manager.login_view = "login"  # redirect to this view if not logged in
 class Base(DeclarativeBase):
     pass
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://admin:assetkey@assetmanager-db2.c7e8oy6qww1d.us-east-2.rds.amazonaws.com/assetmanagerdb2'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+mysqlconnector://{config.DB_USER}:{config.DB_PASSWORD}@{config.DB_HOST}/{config.DB_NAME_ASSETMANAGER}'
 db = SQLAlchemy(model_class=Base)
 db.init_app(app)
 
