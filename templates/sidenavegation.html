@@ -60,6 +60,21 @@
                         </nav>
                     </div>
 
+
+                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
+                       data-bs-target="#collapseLayoutsfour"
+                       aria-expanded="false" aria-controls="collapseLayoutsfour">
+                        <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                        Maintenance Module
+                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                    </a>
+                    <div class="collapse" id="collapseLayoutsfour" aria-labelledby="headingOne"
+                         data-bs-parent="#sidenavAccordion">
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a class="nav-link" href="{{ url_for('active_job_streaming') }}">Job Streaming</a>
+                        </nav>
+                    </div>
+
                 </div>
             </div>
 
@@ -69,12 +84,11 @@
 
 
                 {% if current_user.is_authenticated %}
-            <li class="nav-item"><a>{{ current_user.username }}</a></li>
+                <li class="nav-item"><a>{{ current_user.username }}</a></li>
 
                 {% else %}
-            <li class="nav-item"><a>Not login</a></li>
-        {% endif %}
-
+                <li class="nav-item"><a>Not login</a></li>
+                {% endif %}
 
 
             </div>

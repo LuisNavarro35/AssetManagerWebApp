@@ -653,5 +653,11 @@ def download_asset_file(asset_id):
         mimetype=mime_type
     )
 
+@app.route("/job_streaming", methods=['GET', 'POST'])
+@login_required
+def active_job_streaming():
+
+    return render_template("job_streaming.html")
+
 if __name__ == "__main__":
     app.run(debug=False, host="0.0.0.0", port=80)
