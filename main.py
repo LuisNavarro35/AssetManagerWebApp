@@ -52,7 +52,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+mysqlconnector://{config.DB_USER
 db = SQLAlchemy(model_class=Base)
 db.init_app(app)
 
-# migrate = Migrate(app, db)
+migrate = Migrate(app, db)
 
 #_______________________________________create tables in database______________________________________________________
 #Create asset table
