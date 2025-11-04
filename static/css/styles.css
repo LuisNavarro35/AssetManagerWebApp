@@ -11242,3 +11242,103 @@ body {
   font-size: 0.75rem;
   border-radius: 0.375rem !important;
 }
+
+
+/* === Job Streaming Dashboard (Scoped) === */
+#job-streaming-dashboard {
+  background-color: #000; /* black background */
+  color: #00ffff; /* cyan text */
+  padding: 20px;
+  border-radius: 8px;
+  min-height: 100vh;
+}
+
+/* --- Job Info Header --- */
+#job-streaming-dashboard .jobinfo-header {
+  color: #00ffff;
+  font-weight: 700;
+}
+
+#job-streaming-dashboard #job-name-value,
+#job-streaming-dashboard #crew-cell-value,
+#job-streaming-dashboard #district-value,
+#job-streaming-dashboard #session-user-value {
+  color: #2b80ff;
+  font-weight: 500;
+}
+
+/* --- Card Styling (Dashboard Counters) --- */
+#job-streaming-dashboard .card {
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 10px;
+  color: #ccc;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#job-streaming-dashboard .card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+/* --- Labels (Top Row: Production Metrics) --- */
+#job-streaming-dashboard .metric-label {
+  color: #ffb86c; /* orange */
+  font-weight: 600;
+  font-size: 1.2em;
+}
+
+/* --- Counters (Top Row: Production Metrics) --- */
+#job-streaming-dashboard .metric-counter {
+  color: #50fa7b; /* green */
+  font-weight: 700;
+  font-size: 2em;
+}
+
+/* --- Asset Row (asset1 - asset6) --- */
+#job-streaming-dashboard .asset-label {
+  color: #aaa;
+  font-weight: 600;
+  font-size: 1em;
+}
+
+#job-streaming-dashboard .asset-counter {
+  color: #50fa7b;
+  font-weight: 600;
+  font-size: 1.3em;
+}
+
+/* --- Status Text --- */
+#job-streaming-dashboard #status-label {
+  color: #808080;
+}
+
+#job-streaming-dashboard #status-text {
+  color: #2b80ff;
+}
+
+/* --- Bootstrap Contextual Classes (Scoped Overrides) --- */
+#job-streaming-dashboard .bg-light {
+  background-color: #1e1e1e !important;
+  color: #ccc !important;
+}
+#job-streaming-dashboard .bg-primary {
+  background-color: #0d6efd !important;
+}
+#job-streaming-dashboard .bg-info {
+  background-color: #0dcaf0 !important;
+}
+#job-streaming-dashboard .bg-warning {
+  background-color: #ffc107 !important;
+  color: #000 !important;
+}
+#job-streaming-dashboard .bg-secondary {
+  background-color: #282828 !important;
+  color: #2b80ff !important;
+}
+#job-streaming-dashboard .bg-danger {
+  background-color: #dc3545 !important;
+}
+#job-streaming-dashboard .bg-success {
+  background-color: #198754 !important;
+}

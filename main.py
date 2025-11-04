@@ -656,8 +656,52 @@ def download_asset_file(asset_id):
 @app.route("/job_streaming", methods=['GET', 'POST'])
 @login_required
 def active_job_streaming():
+    jobs = [
+        {
+            "id": 1,
+            "job_name": "Test Job 1",
+            "crew_cell": "Chevron LS",
+            "district": "Midland",
+            "session_user": "Luis Navarro",
+            "status": "Active",
+            "roh": 10,
+            "top_rubber": 5,
+            "middle_rubber": 7,
+            "low_rubber": 3,
+            "shot": 12,
+            "remain": 4,
+            "total": 41,
+            "asset_1": 5,
+            "asset_2": 6,
+            "asset_3": 0,
+            "asset_4": 2,
+            "asset_5": 1,
+            "asset_6": 0
+        },
+        {
+            "id": 2,
+            "job_name": "Test Job 2",
+            "crew_cell": "Chevron HS",
+            "district": "Permian",
+            "session_user": "JVentura",
+            "status": "Active",
+            "roh": 8,
+            "top_rubber": 3,
+            "middle_rubber": 6,
+            "low_rubber": 2,
+            "shot": 10,
+            "remain": 5,
+            "total": 34,
+            "asset_1": 4,
+            "asset_2": 2,
+            "asset_3": 3,
+            "asset_4": 0,
+            "asset_5": 1,
+            "asset_6": 0
+        }
+    ]
 
-    return render_template("job_streaming.html")
+    return render_template("job_streaming.html", jobs=jobs)
 
 if __name__ == "__main__":
     app.run(debug=False, host="0.0.0.0", port=80)
