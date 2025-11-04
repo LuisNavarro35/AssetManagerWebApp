@@ -12,7 +12,7 @@ from functools import wraps
 import os
 import mimetypes
 from io import BytesIO
-from dotenv import load_dotenv
+
 from datetime import datetime, timedelta, date
 
 from typing import Optional
@@ -25,7 +25,8 @@ from sqlalchemy.orm import relationship, DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import Integer, String, Text, ForeignKey, LargeBinary, Date
 
 #_______________________________________________load enviroment variables_______________________________________________
-load_dotenv()
+import config
+from connection import get_connection
 
 #________________________________________________ werkzeug libraries____________________________________________________
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -34,7 +35,7 @@ from werkzeug.utils import secure_filename
 #__________________________________________________initialize flask app_________________________________________________
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  # 5 megabytes
-app.config['SECRET_KEY'] = os.getenv("FLASK_SECRET_KEY")
+app.config['SECRET_KEY'] = config.FLASK_SECRET_KEY
 Bootstrap5(app)
 
 #________________________________________________Initialize LoginManager________________________________________________
@@ -47,7 +48,7 @@ login_manager.login_view = "login"  # redirect to this view if not logged in
 class Base(DeclarativeBase):
     pass
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://admin:assetkey@assetmanager-db2.c7e8oy6qww1d.us-east-2.rds.amazonaws.com/assetmanagerdb2'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+mysqlconnector://{config.DB_USER}:{config.DB_PASSWORD}@{config.DB_HOST}/{config.DB_NAME_ASSETMANAGER}'
 db = SQLAlchemy(model_class=Base)
 db.init_app(app)
 
