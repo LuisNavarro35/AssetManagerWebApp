@@ -14,11 +14,11 @@
         <main>
             <div id="job-streaming-dashboard" class="container-fluid py-4">
 
-                <!-- Accordion for Active Jobs -->
-                <div class="accordion" id="activeJobsAccordion"> <!-- Unique accordion ID -->
+
+                <div class="accordion" id="activeJobsAccordion">
 
                     {% for job in jobs %}
-                    <!-- Job Card -->
+
                     <div class="accordion-item bg-dark text-light border-0 mb-3">
                         <h2 class="accordion-header" id="headingJob{{ job.id }}">
                             <button class="accordion-button bg-secondary text-light collapsed" type="button"
@@ -39,15 +39,15 @@
                             </button>
                         </h2>
 
-                        <!-- Collapse content -->
+
                         <div id="collapseJob{{ job.id }}"
-                             class="accordion-collapse collapse"  <!-- Removed 'show' from all to start collapsed -->
+                             class="accordion-collapse collapse"
                         aria-labelledby="headingJob{{ job.id }}"
-                        data-bs-parent="#activeJobsAccordion"> <!-- Added parent ID to link collapses -->
+                        data-bs-parent="#activeJobsAccordion">
 
                         <div class="accordion-body">
 
-                            <!-- === Production Metrics === -->
+
                             <div class="row text-center g-3 mb-4">
                                 <div class="col-md-2">
                                     <div class="card p-3">
@@ -101,7 +101,7 @@
                                 </div>
                             </div>
 
-                            <!-- === Asset Counters === -->
+
                             <div class="row text-center g-3">
                                 <div class="col-md-2">
                                     <div class="card p-3">
@@ -147,7 +147,7 @@
                                 </div>
                             </div>
 
-                            <!-- === Job Status === -->
+
                             <div class="text-center mt-4">
                                 <span id="status-label">Status:</span>
                                 <span id="status-text">{{ job.status }}</span>
@@ -157,7 +157,7 @@
                     </div>
                 </div>
                 {% endfor %}
-                <!-- /Job Cards -->
+
 
             </div>
     </div>
