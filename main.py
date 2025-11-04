@@ -682,7 +682,13 @@ def active_job_streaming():
                         c.asset_3,
                         c.asset_4,
                         c.asset_5,
-                        c.asset_6
+                        c.asset_6, 
+                        c.asset_1_name,
+                        c.asset_2_name,
+                        c.asset_3_name,
+                        c.asset_4_name,
+                        c.asset_5_name,
+                        c.asset_6_name
                     FROM jobs j
                     JOIN counters c ON j.id = c.job_id
                     WHERE j.status = 'active'
