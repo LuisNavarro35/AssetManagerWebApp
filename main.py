@@ -655,6 +655,7 @@ def download_asset_file(asset_id):
 
 @app.route("/job_streaming", methods=['GET', 'POST'])
 @login_required
+@admin_required
 def active_job_streaming():
     conn = get_connection(config.DB_NAME)
     if not conn:
