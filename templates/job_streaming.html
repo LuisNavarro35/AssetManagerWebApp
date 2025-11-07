@@ -12,6 +12,11 @@
 
     <div id="layoutSidenav_content">
         <main>
+
+            <div class="text-end text-muted small mb-3">
+                Last updated: <span id="last-updated">Loading...</span>
+            </div>
+
             <div id="job-streaming-dashboard" class="container-fluid py-4">
 
                 <div class="accordion" id="activeJobsAccordion">
@@ -103,7 +108,9 @@
                                 <div class="row text-center g-3">
                                     <div class="col-md-2">
                                         <div class="card p-3">
-                                            <div class="asset-label" id="asset1-label-{{ job.job_id }}">{{ job.asset_1_name }}</div>
+                                            <div class="asset-label" id="asset1-label-{{ job.job_id }}">{{
+                                                job.asset_1_name }}
+                                            </div>
                                             <div class="asset-counter" id="asset1-counter-{{ job.job_id }}">{{
                                                 job.asset_1 }}
                                             </div>
@@ -111,7 +118,9 @@
                                     </div>
                                     <div class="col-md-2">
                                         <div class="card p-3">
-                                            <div class="asset-label" id="asset2-label-{{ job.job_id }}">{{ job.asset_2_name }}</div>
+                                            <div class="asset-label" id="asset2-label-{{ job.job_id }}">{{
+                                                job.asset_2_name }}
+                                            </div>
                                             <div class="asset-counter" id="asset2-counter-{{ job.job_id }}">{{
                                                 job.asset_2 }}
                                             </div>
@@ -119,7 +128,9 @@
                                     </div>
                                     <div class="col-md-2">
                                         <div class="card p-3">
-                                            <div class="asset-label" id="asset3-label-{{ job.job_id }}">{{ job.asset_3_name }}</div>
+                                            <div class="asset-label" id="asset3-label-{{ job.job_id }}">{{
+                                                job.asset_3_name }}
+                                            </div>
                                             <div class="asset-counter" id="asset3-counter-{{ job.job_id }}">{{
                                                 job.asset_3 }}
                                             </div>
@@ -127,7 +138,9 @@
                                     </div>
                                     <div class="col-md-2">
                                         <div class="card p-3">
-                                            <div class="asset-label" id="asset4-label-{{ job.job_id }}">{{ job.asset_4_name }}</div>
+                                            <div class="asset-label" id="asset4-label-{{ job.job_id }}">{{
+                                                job.asset_4_name }}
+                                            </div>
                                             <div class="asset-counter" id="asset4-counter-{{ job.job_id }}">{{
                                                 job.asset_4 }}
                                             </div>
@@ -135,7 +148,9 @@
                                     </div>
                                     <div class="col-md-2">
                                         <div class="card p-3">
-                                            <div class="asset-label" id="asset5-label-{{ job.job_id }}">{{ job.asset_5_name }}</div>
+                                            <div class="asset-label" id="asset5-label-{{ job.job_id }}">{{
+                                                job.asset_5_name }}
+                                            </div>
                                             <div class="asset-counter" id="asset5-counter-{{ job.job_id }}">{{
                                                 job.asset_5 }}
                                             </div>
@@ -143,7 +158,9 @@
                                     </div>
                                     <div class="col-md-2">
                                         <div class="card p-3">
-                                            <div class="asset-label" id="asset6-label-{{ job.job_id }}">{{ job.asset_6_name }}</div>
+                                            <div class="asset-label" id="asset6-label-{{ job.job_id }}">{{
+                                                job.asset_6_name }}
+                                            </div>
                                             <div class="asset-counter" id="asset6-counter-{{ job.job_id }}">{{
                                                 job.asset_6 }}
                                             </div>
@@ -231,6 +248,9 @@
             });
 
             console.log(`✅ Job counters updated at ${new Date().toLocaleTimeString()}`);
+            // Update the timestamp display
+            document.getElementById("last-updated").textContent = new Date().toLocaleString();
+
         } catch (err) {
             console.error("❌ Error updating job counters:", err);
         }
