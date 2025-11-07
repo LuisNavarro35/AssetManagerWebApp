@@ -53,42 +53,48 @@
                                     <div class="col-md-2">
                                         <div class="card p-3">
                                             <div class="metric-label">Top Rubber</div>
-                                            <div class="metric-counter" id="top-rubber-counter-{{ job.job_id }}">{{ job.top_rubber }}
+                                            <div class="metric-counter" id="top-rubber-counter-{{ job.job_id }}">{{
+                                                job.top_rubber }}
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-2">
                                         <div class="card p-3">
                                             <div class="metric-label">Middle Rubber</div>
-                                            <div class="metric-counter" id="mid-rubber-counter-{{ job.job_id }}">{{ job.middle_rubber }}
+                                            <div class="metric-counter" id="mid-rubber-counter-{{ job.job_id }}">{{
+                                                job.middle_rubber }}
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-2">
                                         <div class="card p-3">
                                             <div class="metric-label">Lower Rubber</div>
-                                            <div class="metric-counter" id="low-rubber-counter-{{ job.job_id }}">{{ job.low_rubber }}
+                                            <div class="metric-counter" id="low-rubber-counter-{{ job.job_id }}">{{
+                                                job.low_rubber }}
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-2">
                                         <div class="card p-3">
                                             <div class="metric-label">Shot</div>
-                                            <div class="metric-counter" id="shot-counter-{{ job.job_id }}">{{ job.shot }}
+                                            <div class="metric-counter" id="shot-counter-{{ job.job_id }}">{{ job.shot
+                                                }}
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-2">
                                         <div class="card p-3">
                                             <div class="metric-label">Remain</div>
-                                            <div class="metric-counter" id="remain-counter-{{ job.job_id }}">{{ job.remain }}
+                                            <div class="metric-counter" id="remain-counter-{{ job.job_id }}">{{
+                                                job.remain }}
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-2">
                                         <div class="card p-3">
                                             <div class="metric-label">Total</div>
-                                            <div class="metric-counter" id="total-counter-{{ job.job_id }}">{{ job.total }}
+                                            <div class="metric-counter" id="total-counter-{{ job.job_id }}">{{ job.total
+                                                }}
                                             </div>
                                         </div>
                                     </div>
@@ -97,43 +103,49 @@
                                 <div class="row text-center g-3">
                                     <div class="col-md-2">
                                         <div class="card p-3">
-                                            <div class="asset-label">{{ job.asset_1_name }}</div>
-                                            <div class="asset-counter" id="asset1-counter-{{ job.job_id }}">{{ job.asset_1 }}
+                                            <div class="asset-label" id="asset1-label-{{ job.job_id }}">{{ job.asset_1_name }}</div>
+                                            <div class="asset-counter" id="asset1-counter-{{ job.job_id }}">{{
+                                                job.asset_1 }}
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-2">
                                         <div class="card p-3">
-                                            <div class="asset-label">{{ job.asset_2_name }}</div>
-                                            <div class="asset-counter" id="asset2-counter-{{ job.job_id }}">{{ job.asset_2 }}
+                                            <div class="asset-label" id="asset2-label-{{ job.job_id }}">{{ job.asset_2_name }}</div>
+                                            <div class="asset-counter" id="asset2-counter-{{ job.job_id }}">{{
+                                                job.asset_2 }}
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-2">
                                         <div class="card p-3">
-                                            <div class="asset-label">{{ job.asset_3_name }}</div>
-                                            <div class="asset-counter" id="asset3-counter-{{ job.job_id }}">{{ job.asset_3 }}
+                                            <div class="asset-label" id="asset3-label-{{ job.job_id }}">{{ job.asset_3_name }}</div>
+                                            <div class="asset-counter" id="asset3-counter-{{ job.job_id }}">{{
+                                                job.asset_3 }}
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-2">
                                         <div class="card p-3">
-                                            <div class="asset-label">{{ job.asset_4_name }}</div>
-                                            <div class="asset-counter" id="asset4-counter-{{ job.job_id }}">{{ job.asset_4 }}
+                                            <div class="asset-label" id="asset4-label-{{ job.job_id }}">{{ job.asset_4_name }}</div>
+                                            <div class="asset-counter" id="asset4-counter-{{ job.job_id }}">{{
+                                                job.asset_4 }}
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-2">
                                         <div class="card p-3">
-                                            <div class="asset-label">{{ job.asset_5_name }}</div>
-                                            <div class="asset-counter" id="asset5-counter-{{ job.job_id }}">{{ job.asset_5 }}
+                                            <div class="asset-label" id="asset5-label-{{ job.job_id }}">{{ job.asset_5_name }}</div>
+                                            <div class="asset-counter" id="asset5-counter-{{ job.job_id }}">{{
+                                                job.asset_5 }}
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-2">
                                         <div class="card p-3">
-                                            <div class="asset-label">{{ job.asset_6_name }}</div>
-                                            <div class="asset-counter" id="asset6-counter-{{ job.job_id }}">{{ job.asset_6 }}
+                                            <div class="asset-label" id="asset6-label-{{ job.job_id }}">{{ job.asset_6_name }}</div>
+                                            <div class="asset-counter" id="asset6-counter-{{ job.job_id }}">{{
+                                                job.asset_6 }}
                                             </div>
                                         </div>
                                     </div>
@@ -176,5 +188,61 @@
 <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"
         crossorigin="anonymous"></script>
 <script src="static/js/datatables-simple-demo.js"></script>
+<script>
+    const CACHE_URL = "/static/cache/job_data.json";  // path to the cached JSON
+    const REFRESH_INTERVAL = 5 * 60 * 1000;          // 5 minutes in milliseconds
+
+    // Update all jobs on the page
+    async function updateJobCounters() {
+        try {
+            const response = await fetch(CACHE_URL, { cache: "no-store" }); // avoid browser cache
+            if (!response.ok) throw new Error("Failed to fetch JSON");
+
+            const jobs = await response.json();
+
+            jobs.forEach(job => {
+                // Update counters
+                document.getElementById(`roh-counter-${job.job_id}`).textContent = job.roh;
+                document.getElementById(`top-rubber-counter-${job.job_id}`).textContent = job.top_rubber;
+                document.getElementById(`mid-rubber-counter-${job.job_id}`).textContent = job.middle_rubber;
+                document.getElementById(`low-rubber-counter-${job.job_id}`).textContent = job.low_rubber;
+                document.getElementById(`shot-counter-${job.job_id}`).textContent = job.shot;
+                document.getElementById(`remain-counter-${job.job_id}`).textContent = job.remain;
+                document.getElementById(`total-counter-${job.job_id}`).textContent = job.total;
+
+                // Update assets
+                document.getElementById(`asset1-counter-${job.job_id}`).textContent = job.asset_1;
+                document.getElementById(`asset2-counter-${job.job_id}`).textContent = job.asset_2;
+                document.getElementById(`asset3-counter-${job.job_id}`).textContent = job.asset_3;
+                document.getElementById(`asset4-counter-${job.job_id}`).textContent = job.asset_4;
+                document.getElementById(`asset5-counter-${job.job_id}`).textContent = job.asset_5;
+                document.getElementById(`asset6-counter-${job.job_id}`).textContent = job.asset_6;
+
+                 // Update assets names
+                document.getElementById(`asset1-label-${job.job_id}`).textContent = job.asset_1_name;
+                document.getElementById(`asset2-label-${job.job_id}`).textContent = job.asset_2_name;
+                document.getElementById(`asset3-label-${job.job_id}`).textContent = job.asset_3_name;
+                document.getElementById(`asset4-label-${job.job_id}`).textContent = job.asset_4_name;
+                document.getElementById(`asset5-label-${job.job_id}`).textContent = job.asset_5_name;
+                document.getElementById(`asset6-label-${job.job_id}`).textContent = job.asset_6_name;
+
+                // Update status
+                document.getElementById(`status-text`).textContent = job.status;
+            });
+
+            console.log(`✅ Job counters updated at ${new Date().toLocaleTimeString()}`);
+        } catch (err) {
+            console.error("❌ Error updating job counters:", err);
+        }
+    }
+
+    // Initial load
+    updateJobCounters();
+
+    // Repeat every 5 minutes
+    setInterval(updateJobCounters, REFRESH_INTERVAL);
+</script>
+
+
 </body>
 </html>
