@@ -14,6 +14,7 @@ import mimetypes
 from io import BytesIO
 
 from datetime import datetime, timedelta, date
+import json
 
 from typing import Optional
 
@@ -657,49 +658,20 @@ def download_asset_file(asset_id):
 @login_required
 @admin_required
 def active_job_streaming():
-    conn = get_connection(config.DB_NAME)
-    if not conn:
-        return "Database connection failed", 500
+    # Path to the JSON cache file
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    CACHE_FILE = os.path.join(BASE_DIR, "static", "cache", "job_data.json")
 
+    # Try to read the JSON cache
     try:
-        with conn.cursor() as cursor:
-            cursor.execute("""
-                    SELECT 
-                        j.id AS job_id,
-                        j.job_name,
-                        j.crew_cell,
-                        j.district,
-                        j.session_user,
-                        j.status,
-                        c.roh,
-                        c.top_rubber,
-                        c.middle_rubber,
-                        c.low_rubber,
-                        c.shot,
-                        c.remain,
-                        c.total,
-                        c.asset_1,
-                        c.asset_2,
-                        c.asset_3,
-                        c.asset_4,
-                        c.asset_5,
-                        c.asset_6, 
-                        c.asset_1_name,
-                        c.asset_2_name,
-                        c.asset_3_name,
-                        c.asset_4_name,
-                        c.asset_5_name,
-                        c.asset_6_name
-                    FROM jobs j
-                    JOIN counters c ON j.id = c.job_id
-                    WHERE j.status = 'active'
-                """)
-            jobs = cursor.fetchall()  # list of dictionaries
+        with open(CACHE_FILE, "r") as f:
+            jobs = json.load(f)
+    except FileNotFoundError:
+        jobs = []
+    except json.JSONDecodeError:
+        jobs = []
 
-        return render_template("job_streaming.html", jobs=jobs)
-
-    finally:
-        conn.close()
+    return render_template("job_streaming.html", jobs=jobs)
 
 if __name__ == "__main__":
     app.run(debug=False, host="0.0.0.0", port=80)
