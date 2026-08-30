@@ -65,12 +65,11 @@
 
 
 
-<div class="card mb-4">
-  <div class="card-header">
-    <i class="fas fa-table me-1"></i>
-    Maintenance History
+<div class="panel mb-4">
+  <div class="panel-header">
+    <span><i class="fas fa-table me-2"></i>Event log</span>
   </div>
-  <div class="card-body">
+  <div class="panel-body">
       <form method="GET" action="{{ url_for('repair_asset_redirect') }}">
       <!-- Hidden input to store selected event ID -->
       <input type="hidden" name="event_id" id="selectedEventId">
@@ -126,7 +125,7 @@
     </table>
 
          <!-- Repair Button -->
-      <button type="submit" class="btn btn-primary mt-3">Repair Selected Event</button>
+      <button type="submit" class="btn btn-primary mt-3">Repair selected event</button>
 
       </form>
 

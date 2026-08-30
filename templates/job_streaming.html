@@ -1,224 +1,149 @@
-<!DOCTYPE html>
-<html lang="en">
-{% from "bootstrap5/form.html" import render_form %}
-{% include "header.html" %}
+{% include "_layout_open.html" %}
 
-<body class="sb-nav-fixed">
+<div class="page-header">
+    <div>
+        <div class="page-kicker">Stage tracker</div>
+        <h1 class="page-title">Job streaming</h1>
+        <p class="page-subtitle">Live counters for active field jobs.</p>
+    </div>
+    <div class="small text-muted">Last updated: <span id="last-updated">Loading...</span></div>
+</div>
 
-{% include "navegation.html" %}
+<div id="job-streaming-dashboard">
+    <div class="accordion" id="activeJobsAccordion">
+        {% for job in jobs %}
+        <div class="accordion-item job-card mb-3">
+            <h2 class="accordion-header" id="headingJob{{ job.job_id }}">
+                <button class="accordion-button collapsed" type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#collapseJob{{ job.job_id }}"
+                        aria-expanded="false"
+                        aria-controls="collapseJob{{ job.job_id }}">
+                    <div class="d-flex flex-column flex-md-row w-100 justify-content-between gap-2 pe-3">
+                        <div><span class="jobinfo-header text-muted">Job</span> <strong id="job-name-value">{{ job.job_name }}</strong></div>
+                        <div><span class="jobinfo-header text-muted">Crew</span> <span id="crew-cell-value">{{ job.crew_cell }}</span></div>
+                        <div><span class="jobinfo-header text-muted">District</span> <span id="district-value">{{ job.district }}</span></div>
+                        <div><span class="jobinfo-header text-muted">User</span> <span id="session-user-value">{{ job.session_user }}</span></div>
+                    </div>
+                </button>
+            </h2>
 
-<div id="layoutSidenav">
-    {% include "sidenavegation.html" %}
-
-    <div id="layoutSidenav_content">
-        <main>
-
-            <div class="text-end text-muted small mb-3">
-                Last updated: <span id="last-updated">Loading...</span>
-            </div>
-
-            <div id="job-streaming-dashboard" class="container-fluid py-4">
-
-                <div class="accordion" id="activeJobsAccordion">
-
-                    {% for job in jobs %}
-                    <div class="accordion-item bg-dark text-light border-0 mb-3">
-                        <h2 class="accordion-header" id="headingJob{{ job.job_id }}">
-                            <button class="accordion-button bg-secondary text-light collapsed" type="button"
-                                    data-bs-toggle="collapse"
-                                    data-bs-target="#collapseJob{{ job.job_id }}"
-                                    aria-expanded="false"
-                                    aria-controls="collapseJob{{ job.job_id }}">
-                                <div class="d-flex flex-column flex-md-row w-100 justify-content-between">
-                                    <div><span class="jobinfo-header">Job Name:</span> <span id="job-name-value">{{ job.job_name }}</span>
-                                    </div>
-                                    <div><span class="jobinfo-header">Crew Cell:</span> <span id="crew-cell-value">{{ job.crew_cell }}</span>
-                                    </div>
-                                    <div><span class="jobinfo-header">District:</span> <span id="district-value">{{ job.district }}</span>
-                                    </div>
-                                    <div><span class="jobinfo-header">Session User:</span> <span
-                                            id="session-user-value">{{ job.session_user }}</span></div>
-                                </div>
-                            </button>
-                        </h2>
-
-                        <div id="collapseJob{{ job.job_id }}" class="accordion-collapse collapse"
-                             aria-labelledby="headingJob{{ job.job_id }}" data-bs-parent="#activeJobsAccordion">
-
-                            <div class="accordion-body">
-
-                                <div class="row text-center g-3 mb-4">
-                                    <div class="col-md-2">
-                                        <div class="card p-3">
-                                            <div class="metric-label">ROH</div>
-                                            <div class="metric-counter" id="roh-counter-{{ job.job_id }}">{{ job.roh }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="card p-3">
-                                            <div class="metric-label">Top Rubber</div>
-                                            <div class="metric-counter" id="top-rubber-counter-{{ job.job_id }}">{{
-                                                job.top_rubber }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="card p-3">
-                                            <div class="metric-label">Middle Rubber</div>
-                                            <div class="metric-counter" id="mid-rubber-counter-{{ job.job_id }}">{{
-                                                job.middle_rubber }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="card p-3">
-                                            <div class="metric-label">Lower Rubber</div>
-                                            <div class="metric-counter" id="low-rubber-counter-{{ job.job_id }}">{{
-                                                job.low_rubber }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="card p-3">
-                                            <div class="metric-label">Shot</div>
-                                            <div class="metric-counter" id="shot-counter-{{ job.job_id }}">{{ job.shot
-                                                }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="card p-3">
-                                            <div class="metric-label">Remain</div>
-                                            <div class="metric-counter" id="remain-counter-{{ job.job_id }}">{{
-                                                job.remain }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="card p-3">
-                                            <div class="metric-label">Total</div>
-                                            <div class="metric-counter" id="total-counter-{{ job.job_id }}">{{ job.total
-                                                }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row text-center g-3">
-                                    <div class="col-md-2">
-                                        <div class="card p-3">
-                                            <div class="asset-label" id="asset1-label-{{ job.job_id }}">{{
-                                                job.asset_1_name }}
-                                            </div>
-                                            <div class="asset-counter" id="asset1-counter-{{ job.job_id }}">{{
-                                                job.asset_1 }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="card p-3">
-                                            <div class="asset-label" id="asset2-label-{{ job.job_id }}">{{
-                                                job.asset_2_name }}
-                                            </div>
-                                            <div class="asset-counter" id="asset2-counter-{{ job.job_id }}">{{
-                                                job.asset_2 }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="card p-3">
-                                            <div class="asset-label" id="asset3-label-{{ job.job_id }}">{{
-                                                job.asset_3_name }}
-                                            </div>
-                                            <div class="asset-counter" id="asset3-counter-{{ job.job_id }}">{{
-                                                job.asset_3 }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="card p-3">
-                                            <div class="asset-label" id="asset4-label-{{ job.job_id }}">{{
-                                                job.asset_4_name }}
-                                            </div>
-                                            <div class="asset-counter" id="asset4-counter-{{ job.job_id }}">{{
-                                                job.asset_4 }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="card p-3">
-                                            <div class="asset-label" id="asset5-label-{{ job.job_id }}">{{
-                                                job.asset_5_name }}
-                                            </div>
-                                            <div class="asset-counter" id="asset5-counter-{{ job.job_id }}">{{
-                                                job.asset_5 }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="card p-3">
-                                            <div class="asset-label" id="asset6-label-{{ job.job_id }}">{{
-                                                job.asset_6_name }}
-                                            </div>
-                                            <div class="asset-counter" id="asset6-counter-{{ job.job_id }}">{{
-                                                job.asset_6 }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="text-center mt-4">
-                                    <span id="status-label">Status:</span>
-                                    <span id="status-text">{{ job.status }}</span>
-                                </div>
-
+            <div id="collapseJob{{ job.job_id }}" class="accordion-collapse collapse"
+                 aria-labelledby="headingJob{{ job.job_id }}" data-bs-parent="#activeJobsAccordion">
+                <div class="accordion-body">
+                    <div class="row text-center g-3 mb-4">
+                        <div class="col-md-2">
+                            <div class="metric-card">
+                                <div class="metric-label">ROH</div>
+                                <div class="metric-counter" id="roh-counter-{{ job.job_id }}">{{ job.roh }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="metric-card">
+                                <div class="metric-label">Top rubber</div>
+                                <div class="metric-counter" id="top-rubber-counter-{{ job.job_id }}">{{ job.top_rubber }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="metric-card">
+                                <div class="metric-label">Middle rubber</div>
+                                <div class="metric-counter" id="mid-rubber-counter-{{ job.job_id }}">{{ job.middle_rubber }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="metric-card">
+                                <div class="metric-label">Lower rubber</div>
+                                <div class="metric-counter" id="low-rubber-counter-{{ job.job_id }}">{{ job.low_rubber }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="metric-card">
+                                <div class="metric-label">Shot</div>
+                                <div class="metric-counter" id="shot-counter-{{ job.job_id }}">{{ job.shot }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="metric-card">
+                                <div class="metric-label">Remain</div>
+                                <div class="metric-counter" id="remain-counter-{{ job.job_id }}">{{ job.remain }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="metric-card">
+                                <div class="metric-label">Total</div>
+                                <div class="metric-counter" id="total-counter-{{ job.job_id }}">{{ job.total }}</div>
                             </div>
                         </div>
                     </div>
-                    {% endfor %}
 
+                    <div class="row text-center g-3">
+                        <div class="col-md-2">
+                            <div class="metric-card">
+                                <div class="asset-label" id="asset1-label-{{ job.job_id }}">{{ job.asset_1_name }}</div>
+                                <div class="asset-counter" id="asset1-counter-{{ job.job_id }}">{{ job.asset_1 }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="metric-card">
+                                <div class="asset-label" id="asset2-label-{{ job.job_id }}">{{ job.asset_2_name }}</div>
+                                <div class="asset-counter" id="asset2-counter-{{ job.job_id }}">{{ job.asset_2 }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="metric-card">
+                                <div class="asset-label" id="asset3-label-{{ job.job_id }}">{{ job.asset_3_name }}</div>
+                                <div class="asset-counter" id="asset3-counter-{{ job.job_id }}">{{ job.asset_3 }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="metric-card">
+                                <div class="asset-label" id="asset4-label-{{ job.job_id }}">{{ job.asset_4_name }}</div>
+                                <div class="asset-counter" id="asset4-counter-{{ job.job_id }}">{{ job.asset_4 }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="metric-card">
+                                <div class="asset-label" id="asset5-label-{{ job.job_id }}">{{ job.asset_5_name }}</div>
+                                <div class="asset-counter" id="asset5-counter-{{ job.job_id }}">{{ job.asset_5 }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="metric-card">
+                                <div class="asset-label" id="asset6-label-{{ job.job_id }}">{{ job.asset_6_name }}</div>
+                                <div class="asset-counter" id="asset6-counter-{{ job.job_id }}">{{ job.asset_6 }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <span id="status-label" class="text-muted">Status:</span>
+                        <span id="status-text">{{ job.status }}</span>
+                    </div>
                 </div>
             </div>
-
-            {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-            {% for category, message in messages %}
-            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            {% endfor %}
-            {% endif %}
-            {% endwith %}
-        </main>
-
+        </div>
+        {% endfor %}
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-        crossorigin="anonymous"></script>
-<script src="static/js/scripts.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-<script src="static/assets/demo/chart-area-demo.js"></script>
-<script src="static/assets/demo/chart-bar-demo.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"
-        crossorigin="anonymous"></script>
-<script src="static/js/datatables-simple-demo.js"></script>
+            </div>
+        </main>
+        {% include "footer.html" %}
+    </div>
+</div>
+{% include "_scripts.html" %}
 <script>
-    const CACHE_URL = "/static/cache/job_data.json";  // path to the cached JSON
-    const REFRESH_INTERVAL = 5 * 60 * 1000;          // 5 minutes in milliseconds
+    const CACHE_URL = "/static/cache/job_data.json";
+    const REFRESH_INTERVAL = 5 * 60 * 1000;
 
-    // Update all jobs on the page
     async function updateJobCounters() {
         try {
-            const response = await fetch(CACHE_URL, { cache: "no-store" }); // avoid browser cache
+            const response = await fetch(CACHE_URL, { cache: "no-store" });
             if (!response.ok) throw new Error("Failed to fetch JSON");
 
             const jobs = await response.json();
 
             jobs.forEach(job => {
-                // Update counters
                 document.getElementById(`roh-counter-${job.job_id}`).textContent = job.roh;
                 document.getElementById(`top-rubber-counter-${job.job_id}`).textContent = job.top_rubber;
                 document.getElementById(`mid-rubber-counter-${job.job_id}`).textContent = job.middle_rubber;
@@ -227,7 +152,6 @@
                 document.getElementById(`remain-counter-${job.job_id}`).textContent = job.remain;
                 document.getElementById(`total-counter-${job.job_id}`).textContent = job.total;
 
-                // Update assets
                 document.getElementById(`asset1-counter-${job.job_id}`).textContent = job.asset_1;
                 document.getElementById(`asset2-counter-${job.job_id}`).textContent = job.asset_2;
                 document.getElementById(`asset3-counter-${job.job_id}`).textContent = job.asset_3;
@@ -235,7 +159,6 @@
                 document.getElementById(`asset5-counter-${job.job_id}`).textContent = job.asset_5;
                 document.getElementById(`asset6-counter-${job.job_id}`).textContent = job.asset_6;
 
-                 // Update assets names
                 document.getElementById(`asset1-label-${job.job_id}`).textContent = job.asset_1_name;
                 document.getElementById(`asset2-label-${job.job_id}`).textContent = job.asset_2_name;
                 document.getElementById(`asset3-label-${job.job_id}`).textContent = job.asset_3_name;
@@ -243,26 +166,17 @@
                 document.getElementById(`asset5-label-${job.job_id}`).textContent = job.asset_5_name;
                 document.getElementById(`asset6-label-${job.job_id}`).textContent = job.asset_6_name;
 
-                // Update status
                 document.getElementById(`status-text`).textContent = job.status;
             });
 
-            console.log(`✅ Job counters updated at ${new Date().toLocaleTimeString()}`);
-            // Update the timestamp display
             document.getElementById("last-updated").textContent = new Date().toLocaleString();
-
         } catch (err) {
-            console.error("❌ Error updating job counters:", err);
+            console.error("Error updating job counters:", err);
         }
     }
 
-    // Initial load
     updateJobCounters();
-
-    // Repeat every 5 minutes
     setInterval(updateJobCounters, REFRESH_INTERVAL);
 </script>
-
-
 </body>
 </html>

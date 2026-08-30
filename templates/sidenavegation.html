@@ -1,97 +1,91 @@
-<div id="layoutSidenav">
-    <div id="layoutSidenav_nav">
-        <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+<div id="layoutSidenav_nav">
+    <nav class="sb-sidenav accordion sb-sidenav-dark app-sidenav" id="sidenavAccordion">
+        <div class="sb-sidenav-menu">
+            <div class="nav">
+                <div class="sb-sidenav-menu-heading">Overview</div>
+                <a class="nav-link {% if request.endpoint == 'home' %}active{% endif %}" href="{{ url_for('home') }}">
+                    <div class="sb-nav-link-icon"><i class="fas fa-grip"></i></div>
+                    Dashboard
+                </a>
 
-            <div class="sb-sidenav-menu">
-                <div class="nav">
-                    <div class="sb-sidenav-menu-heading">Core</div>
-                    <a class="nav-link" href="{{ url_for('home') }}">
-                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                        Dashboard
-                    </a>
+                <div class="sb-sidenav-menu-heading">Operations</div>
+                <a class="nav-link {% if request.endpoint not in ['assign_asset', 'move_group'] %}collapsed{% endif %}"
+                   href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts"
+                   aria-expanded="{{ 'true' if request.endpoint in ['assign_asset', 'move_group'] else 'false' }}"
+                   aria-controls="collapseLayouts">
+                    <div class="sb-nav-link-icon"><i class="fas fa-truck-fast"></i></div>
+                    Logistics
+                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                </a>
+                <div class="collapse {% if request.endpoint in ['assign_asset', 'move_group'] %}show{% endif %}"
+                     id="collapseLayouts" data-bs-parent="#sidenavAccordion">
+                    <nav class="sb-sidenav-menu-nested nav">
+                        <a class="nav-link {% if request.endpoint == 'assign_asset' %}active{% endif %}" href="{{ url_for('assign_asset') }}">Assign asset</a>
+                        <a class="nav-link {% if request.endpoint == 'move_group' %}active{% endif %}" href="{{ url_for('move_group') }}">Move asset group</a>
+                    </nav>
+                </div>
 
+                <a class="nav-link {% if request.endpoint not in ['maintenance_event', 'maintenance_history'] %}collapsed{% endif %}"
+                   href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayoutstwo"
+                   aria-expanded="{{ 'true' if request.endpoint in ['maintenance_event', 'maintenance_history'] else 'false' }}"
+                   aria-controls="collapseLayoutstwo">
+                    <div class="sb-nav-link-icon"><i class="fas fa-wrench"></i></div>
+                    Maintenance
+                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                </a>
+                <div class="collapse {% if request.endpoint in ['maintenance_event', 'maintenance_history'] %}show{% endif %}"
+                     id="collapseLayoutstwo" data-bs-parent="#sidenavAccordion">
+                    <nav class="sb-sidenav-menu-nested nav">
+                        <a class="nav-link {% if request.endpoint == 'maintenance_event' %}active{% endif %}" href="{{ url_for('maintenance_event') }}">Create event</a>
+                        <a class="nav-link {% if request.endpoint == 'maintenance_history' %}active{% endif %}" href="{{ url_for('maintenance_history') }}">History</a>
+                    </nav>
+                </div>
 
-                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts"
-                       aria-expanded="false" aria-controls="collapseLayouts">
-                        <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-                        Logistic Module
-                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                    </a>
-                    <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne"
-                         data-bs-parent="#sidenavAccordion">
-                        <nav class="sb-sidenav-menu-nested nav">
-                            <a class="nav-link" href="{{ url_for('assign_asset') }}">Assign Asset</a>
-                            <a class="nav-link" href="{{ url_for('move_group') }}">Move Asset group</a>
-                        </nav>
-                    </div>
+                <a class="nav-link {% if request.endpoint != 'active_job_streaming' %}collapsed{% endif %}"
+                   href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayoutsfour"
+                   aria-expanded="{{ 'true' if request.endpoint == 'active_job_streaming' else 'false' }}"
+                   aria-controls="collapseLayoutsfour">
+                    <div class="sb-nav-link-icon"><i class="fas fa-stream"></i></div>
+                    Stage tracker
+                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                </a>
+                <div class="collapse {% if request.endpoint == 'active_job_streaming' %}show{% endif %}"
+                     id="collapseLayoutsfour" data-bs-parent="#sidenavAccordion">
+                    <nav class="sb-sidenav-menu-nested nav">
+                        <a class="nav-link {% if request.endpoint == 'active_job_streaming' %}active{% endif %}" href="{{ url_for('active_job_streaming') }}">Job streaming</a>
+                    </nav>
+                </div>
 
-
-                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
-                       data-bs-target="#collapseLayoutstwo"
-                       aria-expanded="false" aria-controls="collapseLayoutstwo">
-                        <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-                        Maintenance Module
-                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                    </a>
-                    <div class="collapse" id="collapseLayoutstwo" aria-labelledby="headingOne"
-                         data-bs-parent="#sidenavAccordion">
-                        <nav class="sb-sidenav-menu-nested nav">
-                            <a class="nav-link" href="{{ url_for('maintenance_event') }}">Create Maintenance Event</a>
-                            <a class="nav-link" href="{{ url_for('maintenance_history') }}">Maintenance History</a>
-                        </nav>
-                    </div>
-
-
-                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
-                       data-bs-target="#collapseLayoutsthree"
-                       aria-expanded="false" aria-controls="collapseLayoutsthree">
-                        <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-                        Admin Features 🔒
-                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                    </a>
-                    <div class="collapse" id="collapseLayoutsthree" aria-labelledby="headingOne"
-                         data-bs-parent="#sidenavAccordion">
-                        <nav class="sb-sidenav-menu-nested nav">
-                            <a class="nav-link" href="{{ url_for('new_asset') }}">Create New Asset</a>
-                            <a class="nav-link" href="{{ url_for('new_assetgroup') }}">Create Asset Group 🔒</a>
-                            <a class="nav-link" href="{{ url_for('new_location') }}">Create Location 🔒</a>
-                            <a class="nav-link" href="{{ url_for('delete_group') }}">Delete Group 🔒</a>
-                            <a class="nav-link" href="{{ url_for('delete_location') }}">Delete Location 🔒</a>
-                        </nav>
-                    </div>
-
-
-                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
-                       data-bs-target="#collapseLayoutsfour"
-                       aria-expanded="false" aria-controls="collapseLayoutsfour">
-                        <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-                        Stage Tracker Module
-                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                    </a>
-                    <div class="collapse" id="collapseLayoutsfour" aria-labelledby="headingOne"
-                         data-bs-parent="#sidenavAccordion">
-                        <nav class="sb-sidenav-menu-nested nav">
-                            <a class="nav-link" href="{{ url_for('active_job_streaming') }}">Job Streaming</a>
-                        </nav>
-                    </div>
-
+                <div class="sb-sidenav-menu-heading">Administration</div>
+                <a class="nav-link {% if request.endpoint not in ['new_asset', 'new_assetgroup', 'new_location', 'delete_group', 'delete_location'] %}collapsed{% endif %}"
+                   href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayoutsthree"
+                   aria-expanded="{{ 'true' if request.endpoint in ['new_asset', 'new_assetgroup', 'new_location', 'delete_group', 'delete_location'] else 'false' }}"
+                   aria-controls="collapseLayoutsthree">
+                    <div class="sb-nav-link-icon"><i class="fas fa-shield-halved"></i></div>
+                    Admin
+                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                </a>
+                <div class="collapse {% if request.endpoint in ['new_asset', 'new_assetgroup', 'new_location', 'delete_group', 'delete_location'] %}show{% endif %}"
+                     id="collapseLayoutsthree" data-bs-parent="#sidenavAccordion">
+                    <nav class="sb-sidenav-menu-nested nav">
+                        <a class="nav-link {% if request.endpoint == 'new_asset' %}active{% endif %}" href="{{ url_for('new_asset') }}">Create asset</a>
+                        <a class="nav-link {% if request.endpoint == 'new_assetgroup' %}active{% endif %}" href="{{ url_for('new_assetgroup') }}">Create group</a>
+                        <a class="nav-link {% if request.endpoint == 'new_location' %}active{% endif %}" href="{{ url_for('new_location') }}">Create location</a>
+                        <a class="nav-link {% if request.endpoint == 'delete_group' %}active{% endif %}" href="{{ url_for('delete_group') }}">Delete group</a>
+                        <a class="nav-link {% if request.endpoint == 'delete_location' %}active{% endif %}" href="{{ url_for('delete_location') }}">Delete location</a>
+                    </nav>
                 </div>
             </div>
+        </div>
 
-
-            <div class="sb-sidenav-footer">
-                <div class="small">Logged in as:</div>
-
-
-                {% if current_user.is_authenticated %}
-                <li class="nav-item"><a>{{ current_user.username }}</a></li>
-
-                {% else %}
-                <li class="nav-item"><a>Not login</a></li>
-                {% endif %}
-
-
-            </div>
-        </nav>
-    </div>
+        <div class="sb-sidenav-footer">
+            {% if current_user.is_authenticated %}
+            <div class="small"><span class="status-dot"></span>Signed in</div>
+            <div>{{ current_user.username }}</div>
+            {% else %}
+            <div class="small">Guest session</div>
+            <div>Not signed in</div>
+            {% endif %}
+        </div>
+    </nav>
 </div>
