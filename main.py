@@ -14,6 +14,7 @@ import mimetypes
 from io import BytesIO
 
 from datetime import datetime, timedelta, date
+import json
 
 from typing import Optional
 
@@ -652,6 +653,25 @@ def download_asset_file(asset_id):
         download_name=filename,
         mimetype=mime_type
     )
+
+@app.route("/job_streaming", methods=['GET', 'POST'])
+@login_required
+@admin_required
+def active_job_streaming():
+    # Path to the JSON cache file
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    CACHE_FILE = os.path.join(BASE_DIR, "static", "cache", "job_data.json")
+
+    # Try to read the JSON cache
+    try:
+        with open(CACHE_FILE, "r") as f:
+            jobs = json.load(f)
+    except FileNotFoundError:
+        jobs = []
+    except json.JSONDecodeError:
+        jobs = []
+
+    return render_template("job_streaming.html", jobs=jobs)
 
 if __name__ == "__main__":
     app.run(debug=False, host="0.0.0.0", port=80)
