@@ -1,5 +1,5 @@
 #________________________________________________flask libraries_______________________________________________________
-from flask import Flask, render_template, redirect, url_for, flash, abort, request, Response, send_file
+from flask import Flask, render_template, redirect, url_for, flash, abort, request, Response, send_file, jsonify
 from flask_bootstrap import Bootstrap5
 from flask_migrate import Migrate
 
@@ -11,6 +11,7 @@ from functools import wraps
 
 import os
 import mimetypes
+import zipfile
 from io import BytesIO
 
 from datetime import datetime, timedelta, date
@@ -632,7 +633,66 @@ def repair_asset_redirect():
 def nl2br(value):
     return value.replace('\n', '<br>')
 
+def _assets_with_files_for_group(asset_group: str):
+    return db.session.query(Asset).filter(
+        Asset.asset_group == asset_group,
+        Asset.file_data.isnot(None),
+    ).all()
+
+
+def _asset_zip_entry_name(asset: Asset) -> str:
+    extension = asset.file_extension or ''
+    raw_name = f"{asset.sn}{asset.name}"
+    safe_name = secure_filename(raw_name) or f"asset_{asset.id}"
+    return f"{safe_name}{extension}"
+
+
+@app.route('/asset-group-files/info')
+@login_required
+def asset_group_files_info():
+    asset_group = request.args.get('asset_group', '').strip()
+    if not asset_group:
+        return jsonify(error='Asset group is required'), 400
+
+    assets = _assets_with_files_for_group(asset_group)
+    return jsonify(asset_group=asset_group, file_count=len(assets))
+
+
+@app.route('/asset-group-files/download')
+@login_required
+def download_asset_group_files():
+    asset_group = request.args.get('asset_group', '').strip()
+    if not asset_group:
+        flash('Asset group is required.', 'warning')
+        return redirect(url_for('home'))
+
+    assets = _assets_with_files_for_group(asset_group)
+    if not assets:
+        flash('No uploaded files found for this asset group.', 'warning')
+        return redirect(url_for('home'))
+
+    buffer = BytesIO()
+    with zipfile.ZipFile(buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+        used_names = set()
+        for asset in assets:
+            entry_name = _asset_zip_entry_name(asset)
+            if entry_name in used_names:
+                entry_name = f"{secure_filename(asset.sn) or asset.id}_{entry_name}"
+            used_names.add(entry_name)
+            zip_file.writestr(entry_name, asset.file_data)
+
+    buffer.seek(0)
+    zip_name = secure_filename(f"{asset_group}_files.zip") or 'asset_group_files.zip'
+    return send_file(
+        buffer,
+        as_attachment=True,
+        download_name=zip_name,
+        mimetype='application/zip',
+    )
+
+
 @app.route('/assets/<int:asset_id>/download')
+@login_required
 def download_asset_file(asset_id):
     asset = Asset.query.get_or_404(asset_id)
 

@@ -102,13 +102,63 @@
 
 <script>
     $(document).ready(function () {
-        const table = $('#assetsTable').DataTable({
+        const groupFilesInfoUrl = "{{ url_for('asset_group_files_info') }}";
+        const groupFilesDownloadUrl = "{{ url_for('download_asset_group_files') }}";
+        const assetGroupSelect = $('#assetsTable thead tr:eq(1) th').eq(2).find('select');
+        let table;
+
+        function updateGroupFilesButton() {
+            const groupSelected = assetGroupSelect.val() !== '';
+            table.button('.buttons-group-files').enable(groupSelected);
+        }
+
+        function downloadGroupFiles() {
+            const assetGroup = assetGroupSelect.val();
+            if (!assetGroup) {
+                return;
+            }
+
+            $.getJSON(groupFilesInfoUrl, { asset_group: assetGroup })
+                .done(function (data) {
+                    const fileCount = data.file_count || 0;
+                    if (fileCount === 0) {
+                        window.alert('No uploaded files found for asset group "' + assetGroup + '".');
+                        return;
+                    }
+
+                    const message = fileCount + ' file' + (fileCount === 1 ? '' : 's') +
+                        ' will be downloaded for asset group "' + assetGroup + '".\n\nDo you want to continue?';
+
+                    if (window.confirm(message)) {
+                        window.location.href = groupFilesDownloadUrl +
+                            '?asset_group=' + encodeURIComponent(assetGroup);
+                    }
+                })
+                .fail(function () {
+                    window.alert('Could not check files for the selected asset group. Please try again.');
+                });
+        }
+
+        table = $('#assetsTable').DataTable({
             orderCellsTop: true,
             fixedHeader: true,
             responsive: true,
             pageLength: 25,
             dom: 'Bfrtip',
-            buttons: ['copy', 'csv', 'excel', 'pdf'],
+            buttons: [
+                'copy',
+                'csv',
+                'excel',
+                'pdf',
+                {
+                    text: 'Group Files (ZIP)',
+                    className: 'buttons-group-files',
+                    enabled: false,
+                    action: function () {
+                        downloadGroupFiles();
+                    }
+                }
+            ],
             initComplete: function () {
                 const api = this.api();
 
@@ -143,6 +193,9 @@
                         });
                     }
                 });
+
+                assetGroupSelect.on('change', updateGroupFilesButton);
+                updateGroupFilesButton();
 
                 // Initial call to color status
                 applyStatusColors();
