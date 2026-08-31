@@ -248,6 +248,7 @@ def forbidden(e):
 #______________________________________________flask functions routes___________________________________________________
 
 @app.route('/')
+@login_required
 def home():
     all_assets = db.session.query(Asset).all()
     return render_template("index.html", all_assets=all_assets)
