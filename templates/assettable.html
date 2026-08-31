@@ -60,6 +60,7 @@
 
 {% set asset_table_page_length = asset_table_page_length | default(25) %}
 {% set asset_table_select_mode = asset_table_select_mode | default(false) %}
+{% set asset_table_initial_sn = asset_table_initial_sn | default('') %}
 
 
 
@@ -110,7 +111,7 @@
         const GROUP_FILES_BUTTON_INDEX = 4;
         const pageLength = {{ asset_table_page_length }};
         const selectMode = {{ 'true' if asset_table_select_mode else 'false' }};
-        let selectedAssetSn = null;
+        let selectedAssetSn = {{ asset_table_initial_sn | tojson }} || null;
 
         function getAssetGroupSelect() {
             return $('#assetsTable thead tr:eq(1) th').eq(2).find('select');

@@ -16,4 +16,20 @@
     </div>
 </div>
 
+<div class="row mt-4 mb-3">
+    <div class="col-12">
+        <p class="page-subtitle mb-0">Search for an existing asset</p>
+    </div>
+</div>
+
+<div class="panel mb-4">
+    <div class="panel-header">Inventory</div>
+    <div class="panel-body">
+        {% set asset_table_page_length = 10 %}
+        {% set asset_table_select_mode = true %}
+        {% set asset_table_initial_sn = form.sn.data or '' %}
+        {% include "assettable.html" %}
+    </div>
+</div>
+
 {% include "_layout_close.html" %}

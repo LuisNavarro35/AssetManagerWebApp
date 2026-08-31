@@ -324,7 +324,8 @@ def maintenance_event():
 
         else:
             flash("Asset doesn't exist, Please create New Asset", "danger")
-    return render_template("createmaintenance.html", form=maintenance_event_form)
+    all_assets = db.session.query(Asset).all()
+    return render_template("createmaintenance.html", form=maintenance_event_form, all_assets=all_assets)
 
 
 @app.route('/maintenance-history', methods=['GET', 'POST'])
