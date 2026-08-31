@@ -104,16 +104,19 @@
     $(document).ready(function () {
         const groupFilesInfoUrl = "{{ url_for('asset_group_files_info') }}";
         const groupFilesDownloadUrl = "{{ url_for('download_asset_group_files') }}";
-        const assetGroupSelect = $('#assetsTable thead tr:eq(1) th').eq(2).find('select');
-        let table;
+        const GROUP_FILES_BUTTON_INDEX = 4;
 
-        function updateGroupFilesButton() {
-            const groupSelected = assetGroupSelect.val() !== '';
-            table.button('.buttons-group-files').enable(groupSelected);
+        function getAssetGroupSelect() {
+            return $('#assetsTable thead tr:eq(1) th').eq(2).find('select');
+        }
+
+        function updateGroupFilesButton(api) {
+            const groupSelected = getAssetGroupSelect().val() !== '';
+            api.button(GROUP_FILES_BUTTON_INDEX).enable(groupSelected);
         }
 
         function downloadGroupFiles() {
-            const assetGroup = assetGroupSelect.val();
+            const assetGroup = getAssetGroupSelect().val();
             if (!assetGroup) {
                 return;
             }
@@ -139,7 +142,24 @@
                 });
         }
 
-        table = $('#assetsTable').DataTable({
+        function applyStatusColors() {
+            $('#assetsTable tbody tr').each(function () {
+                const statusCell = $(this).find('td').eq(7);
+                const statusText = statusCell.text().trim().toLowerCase();
+
+                statusCell.removeClass('status-bad status-warning status-good');
+
+                if (statusText === 'bad') {
+                    statusCell.addClass('status-bad');
+                } else if (statusText === 'warning') {
+                    statusCell.addClass('status-warning');
+                } else if (statusText === 'good') {
+                    statusCell.addClass('status-good');
+                }
+            });
+        }
+
+        $('#assetsTable').DataTable({
             orderCellsTop: true,
             fixedHeader: true,
             responsive: true,
@@ -190,36 +210,17 @@
                         select.on('change', function () {
                             const val = $.fn.dataTable.util.escapeRegex($(this).val());
                             column.search(val ? '^' + val + '$' : '', true, false).draw();
+                            if (colIdx === 2) {
+                                updateGroupFilesButton(api);
+                            }
                         });
                     }
                 });
 
-                assetGroupSelect.on('change', updateGroupFilesButton);
-                updateGroupFilesButton();
-
-                // Initial call to color status
+                updateGroupFilesButton(api);
                 applyStatusColors();
-
-                // Reapply colors after every redraw
                 api.on('draw', applyStatusColors);
             }
         });
-
-        function applyStatusColors() {
-            $('#assetsTable tbody tr').each(function () {
-                const statusCell = $(this).find('td').eq(7); // status is 8th column (index 7)
-                const statusText = statusCell.text().trim().toLowerCase();
-
-                statusCell.removeClass('status-bad status-warning status-good');
-
-                if (statusText === 'bad') {
-                    statusCell.addClass('status-bad');
-                } else if (statusText === 'warning') {
-                    statusCell.addClass('status-warning');
-                } else if (statusText === 'good') {
-                    statusCell.addClass('status-good');
-                }
-            });
-        }
     });
 </script>
