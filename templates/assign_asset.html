@@ -25,6 +25,8 @@
 <div class="panel mb-4">
     <div class="panel-header">Inventory</div>
     <div class="panel-body">
+        {% set asset_table_page_length = 10 %}
+        {% set asset_table_select_mode = true %}
         {% include "assettable.html" %}
     </div>
 </div>

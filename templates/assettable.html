@@ -52,15 +52,18 @@
         min-width: 12ch;
         white-space: nowrap;
     }
+
+    #assetsTable.select-mode tbody tr {
+        cursor: pointer;
+    }
 </style>
 
+{% set asset_table_page_length = asset_table_page_length | default(25) %}
+{% set asset_table_select_mode = asset_table_select_mode | default(false) %}
 
 
 
-
-
-
-<table id="assetsTable" class="table table-striped table-bordered">
+<table id="assetsTable" class="table table-striped table-bordered{% if asset_table_select_mode %} select-mode{% endif %}">
     <thead>
     <tr>
         <th>Asset SN</th>
@@ -86,7 +89,7 @@
 
     <tbody>
         {% for asset in all_assets %}
-        <tr ondblclick="window.location.href='/asset/{{ asset.sn }}'">
+        <tr{% if not asset_table_select_mode %} ondblclick="window.location.href='/asset/{{ asset.sn }}'"{% endif %}>
             <td>{{ asset.sn }}</td>
             <td>{{ asset.name }}</td>
             <td>{{ asset.asset_group }}</td>
@@ -105,6 +108,9 @@
         const groupFilesInfoUrl = "{{ url_for('asset_group_files_info') }}";
         const groupFilesDownloadUrl = "{{ url_for('download_asset_group_files') }}";
         const GROUP_FILES_BUTTON_INDEX = 4;
+        const pageLength = {{ asset_table_page_length }};
+        const selectMode = {{ 'true' if asset_table_select_mode else 'false' }};
+        let selectedAssetSn = null;
 
         function getAssetGroupSelect() {
             return $('#assetsTable thead tr:eq(1) th').eq(2).find('select');
@@ -159,11 +165,33 @@
             });
         }
 
+        function applySelectedRowHighlight() {
+            if (!selectMode || !selectedAssetSn) {
+                return;
+            }
+
+            $('#assetsTable tbody tr').each(function () {
+                const rowSn = $(this).find('td').eq(0).text().trim();
+                $(this).toggleClass('table-active', rowSn === selectedAssetSn);
+            });
+        }
+
+        function selectAssetRow(row) {
+            const sn = $(row).find('td').eq(0).text().trim();
+            if (!sn) {
+                return;
+            }
+
+            selectedAssetSn = sn;
+            $('input[name="sn"]').val(sn);
+            applySelectedRowHighlight();
+        }
+
         $('#assetsTable').DataTable({
             orderCellsTop: true,
             fixedHeader: true,
             responsive: true,
-            pageLength: 25,
+            pageLength: pageLength,
             dom: 'Bfrtip',
             buttons: [
                 'copy',
@@ -219,7 +247,17 @@
 
                 updateGroupFilesButton(api);
                 applyStatusColors();
-                api.on('draw', applyStatusColors);
+                applySelectedRowHighlight();
+                api.on('draw', function () {
+                    applyStatusColors();
+                    applySelectedRowHighlight();
+                });
+
+                if (selectMode) {
+                    $('#assetsTable tbody').on('click', 'tr', function () {
+                        selectAssetRow(this);
+                    });
+                }
             }
         });
     });
