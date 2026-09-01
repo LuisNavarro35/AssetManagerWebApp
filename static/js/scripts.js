@@ -12,15 +12,36 @@ window.addEventListener('DOMContentLoaded', event => {
     // Toggle the side navigation
     const sidebarToggle = document.body.querySelector('#sidebarToggle');
     if (sidebarToggle) {
-        // Uncomment Below to persist sidebar toggle between refreshes
-        // if (localStorage.getItem('sb|sidebar-toggle') === 'true') {
-        //     document.body.classList.toggle('sb-sidenav-toggled');
-        // }
         sidebarToggle.addEventListener('click', event => {
             event.preventDefault();
             document.body.classList.toggle('sb-sidenav-toggled');
             localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
         });
     }
+
+    const layoutContent = document.getElementById('layoutSidenav_content');
+    if (layoutContent) {
+        layoutContent.addEventListener('click', event => {
+            if (window.innerWidth >= 992) {
+                return;
+            }
+
+            if (!document.body.classList.contains('sb-sidenav-toggled')) {
+                return;
+            }
+
+            const sidenav = document.getElementById('layoutSidenav_nav');
+            if (sidenav && (event.target === layoutContent || !sidenav.contains(event.target))) {
+                document.body.classList.remove('sb-sidenav-toggled');
+                localStorage.setItem('sb|sidebar-toggle', 'false');
+            }
+        });
+    }
+
+    window.addEventListener('resize', () => {
+        if (window.innerWidth >= 992) {
+            document.body.classList.remove('sb-sidenav-toggled');
+        }
+    });
 
 });

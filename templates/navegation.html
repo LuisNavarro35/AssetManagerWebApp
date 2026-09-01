@@ -1,14 +1,14 @@
-<nav class="sb-topnav navbar navbar-expand app-topbar">
-    <a class="navbar-brand" href="{{ url_for('home') }}">
-        <span class="app-brand-mark"><i class="fas fa-layer-group"></i></span>
-        Asset Manager
-    </a>
-
-    <button class="btn btn-link btn-sm order-1 order-lg-0 me-3" id="sidebarToggle" type="button" aria-label="Toggle navigation">
+<nav class="sb-topnav navbar app-topbar">
+    <button class="btn btn-link btn-sm me-1" id="sidebarToggle" type="button" aria-label="Toggle navigation">
         <i class="fas fa-bars"></i>
     </button>
 
-    <ul class="navbar-nav align-items-center">
+    <a class="navbar-brand" href="{{ url_for('home') }}">
+        <span class="app-brand-mark"><i class="fas fa-layer-group"></i></span>
+        <span class="app-brand-text">Asset Manager</span>
+    </a>
+
+    <ul class="navbar-nav ms-auto align-items-center flex-row">
         {% if current_user.is_authenticated %}
         <li class="nav-item">
             <span class="app-user-chip">
