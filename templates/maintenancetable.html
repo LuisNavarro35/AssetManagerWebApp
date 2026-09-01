@@ -17,6 +17,19 @@
     width: 100%; box-sizing: border-box;
   }
 
+  #maintenanceTable th,
+  #maintenanceTable tbody td {
+    white-space: nowrap;
+  }
+
+  #maintenanceTable th:nth-child(5),
+  #maintenanceTable tbody td:nth-child(5) {
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    min-width: 14rem;
+  }
+
     .date-filter-row {
   display: flex;
   justify-content: space-between;
@@ -41,6 +54,10 @@
 .table-active {
     background-color: #abd1fc !important;
     font-weight: bold;
+  }
+
+  #maintenanceTable tbody tr {
+    cursor: pointer;
   }
 
 </style>
@@ -93,7 +110,7 @@
       </thead>
       <tbody>
         {% for record in records %}
-        <tr onclick="selectRow(this, {{ record.id }})">
+        <tr data-event-id="{{ record.id }}">
           <td>{{ record.sn }}</td>
           <td>{{ record.name }}</td>
           <td>{{ record.parent_asset.asset_group if record.parent_asset else 'N/A' }}</td>
@@ -116,6 +133,18 @@
 
 <script>
   $(document).ready(function () {
+    let selectedRow = null;
+
+    function selectRow(row, eventId) {
+      document.getElementById('selectedEventId').value = eventId;
+
+      if (selectedRow) {
+        selectedRow.classList.remove('table-active');
+      }
+      selectedRow = row;
+      selectedRow.classList.add('table-active');
+    }
+
     const table = $('#maintenanceTable').DataTable({
       orderCellsTop: true,
       fixedHeader: true,
@@ -162,6 +191,10 @@
         // initial coloring + reapply on draw
         applyStatusColors();
         api.on('draw', applyStatusColors);
+
+        $('#maintenanceTable tbody').on('click', 'tr', function () {
+          selectRow(this, this.dataset.eventId);
+        });
       }
     });
 
@@ -198,21 +231,5 @@ $.fn.dataTable.ext.search.push(
     return false;
   }
 );
-
-// Select the event id event to repair
-    let selectedRow = null;
-
-  function selectRow(row, eventId) {
-    // Store the selected event ID in the hidden input
-    document.getElementById("selectedEventId").value = eventId;
-
-    // Optional: Highlight the selected row visually
-    if (selectedRow) {
-      selectedRow.classList.remove("table-active");
-    }
-    selectedRow = row;
-    selectedRow.classList.add("table-active");
-  }
-
 
 </script>
