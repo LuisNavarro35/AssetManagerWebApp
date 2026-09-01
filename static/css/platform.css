@@ -422,17 +422,38 @@ thead select {
 .status-warning,
 .status-good,
 .status-repaired {
-  border-radius: 999px !important;
+  border-radius: 0 !important;
   text-align: center;
-  font-size: 0.75rem !important;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  font-size: 0.78rem !important;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-transform: capitalize;
+  border-left: 2px solid transparent;
 }
 
-.status-bad { background: var(--bad-soft) !important; color: #991b1b !important; }
-.status-warning { background: var(--warn-soft) !important; color: #92400e !important; }
-.status-good { background: var(--ok-soft) !important; color: #065f46 !important; }
-.status-repaired { background: var(--info-soft) !important; color: #075985 !important; }
+.status-bad {
+  background: rgba(220, 38, 38, 0.1) !important;
+  color: #991b1b !important;
+  border-left-color: rgba(220, 38, 38, 0.35) !important;
+}
+
+.status-warning {
+  background: rgba(217, 119, 6, 0.1) !important;
+  color: #92400e !important;
+  border-left-color: rgba(217, 119, 6, 0.35) !important;
+}
+
+.status-good {
+  background: rgba(5, 150, 105, 0.1) !important;
+  color: #065f46 !important;
+  border-left-color: rgba(5, 150, 105, 0.35) !important;
+}
+
+.status-repaired {
+  background: rgba(2, 132, 199, 0.1) !important;
+  color: #075985 !important;
+  border-left-color: rgba(2, 132, 199, 0.35) !important;
+}
 
 .table-active {
   outline: 2px solid var(--accent);
